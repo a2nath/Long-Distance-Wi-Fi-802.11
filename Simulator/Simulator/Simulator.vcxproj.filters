@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\PHY">
+      <UniqueIdentifier>{1e156d6c-a32f-45d8-9718-3db018643121}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MAC">
+      <UniqueIdentifier>{aa39e7f0-8ced-4ec5-ad0e-ae4cd64a9324}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{531dfc51-afee-4596-9deb-c07d445e0eb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UPPER">
+      <UniqueIdentifier>{6f8f2ca9-4b5d-44f8-bc2d-267a6423474f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ADMIN">
+      <UniqueIdentifier>{1cb1f66a-8c1d-4d92-92a1-921280e1f269}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\source\src\Program.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\src\Station_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\src\Station_timers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\src\Timers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\src\TrafficGen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\src\WiFi_Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\src\Common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\src\Frames.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\src\GUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\source\inc\Antenna.h">
+      <Filter>Header Files\PHY</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\FrameBox.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\WirelessChannel.h">
+      <Filter>Header Files\PHY</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\TrafficGen.h">
+      <Filter>Header Files\UPPER</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\Links.h">
+      <Filter>Header Files\MAC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\Phy.h">
+      <Filter>Header Files\PHY</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\Mac.h">
+      <Filter>Header Files\MAC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\GUI.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\Grid.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\Indication.h">
+      <Filter>Header Files\MAC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\Lines.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\PhyRate.h">
+      <Filter>Header Files\PHY</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\LabelBox.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\Scroller.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\Station.h">
+      <Filter>Header Files\PHY</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\timers.h">
+      <Filter>Header Files\MAC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\Frames.h">
+      <Filter>Header Files\MAC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\gcommon.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\common.h">
+      <Filter>Header Files\ADMIN</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\Event.h">
+      <Filter>Header Files\ADMIN</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\Program.h">
+      <Filter>Header Files\ADMIN</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\Location.h">
+      <Filter>Header Files\ADMIN</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\Logger.h">
+      <Filter>Header Files\ADMIN</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\inc\Field.h">
+      <Filter>Header Files\ADMIN</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

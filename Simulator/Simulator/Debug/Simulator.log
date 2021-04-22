@@ -1,0 +1,557 @@
+﻿  Common.cpp
+C:\Users\abhim\Desktop\Simulator\source\inc\Logger.h(26,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(106,18): warning C4244: 'return': conversion from 'double' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(149,74): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(157,19): warning C4244: 'argument': conversion from 'double' to 'const _Ty', possible loss of data
+          with
+          [
+              _Ty=std::seed_seq::result_type
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(165,48): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(185,11): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(189,17): warning C4244: 'return': conversion from 'double' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(197,9): warning C4244: 'return': conversion from 'double' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(201,50): warning C4244: 'return': conversion from 'double' to 'uint', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\utility(193,54): warning C4244: 'initializing': conversion from '_Ty' to '_Ty2', possible loss of data
+          with
+          [
+              _Ty=double
+          ]
+          and
+          [
+              _Ty2=float
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(39): message : see reference to function template instantiation 'std::pair<const std::string,float>::pair<const char(&)[7],double,0>(_Other1,_Other2 &&) noexcept(false)' being compiled
+          with
+          [
+              _Other1=const char (&)[7],
+              _Other2=double
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(30): message : see reference to function template instantiation 'std::pair<const std::string,float>::pair<const char(&)[7],double,0>(_Other1,_Other2 &&) noexcept(false)' being compiled
+          with
+          [
+              _Other1=const char (&)[7],
+              _Other2=double
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\utility(193,54): warning C4244: 'initializing': conversion from '_Ty' to '_Ty2', possible loss of data
+          with
+          [
+              _Ty=int
+          ]
+          and
+          [
+              _Ty2=float
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(39): message : see reference to function template instantiation 'std::pair<const std::string,float>::pair<const char(&)[8],int,0>(_Other1,_Other2 &&) noexcept(false)' being compiled
+          with
+          [
+              _Other1=const char (&)[8],
+              _Other2=int
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(30): message : see reference to function template instantiation 'std::pair<const std::string,float>::pair<const char(&)[8],int,0>(_Other1,_Other2 &&) noexcept(false)' being compiled
+          with
+          [
+              _Other1=const char (&)[8],
+              _Other2=int
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\utility(193,16): warning C4244: 'initializing': conversion from '_Ty' to '_Ty1', possible loss of data
+          with
+          [
+              _Ty=double
+          ]
+          and
+          [
+              _Ty1=const float
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(61): message : see reference to function template instantiation 'std::pair<const float,double>::pair<double,int,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
+          with
+          [
+              _Other1=double,
+              _Other2=int
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(52): message : see reference to function template instantiation 'std::pair<const float,double>::pair<double,int,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
+          with
+          [
+              _Other1=double,
+              _Other2=int
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\utility(193,16): warning C4244: 'initializing': conversion from '_Ty' to '_Ty1', possible loss of data
+          with
+          [
+              _Ty=int
+          ]
+          and
+          [
+              _Ty1=const float
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(61): message : see reference to function template instantiation 'std::pair<const float,double>::pair<int,int,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
+          with
+          [
+              _Other1=int,
+              _Other2=int
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Common.cpp(52): message : see reference to function template instantiation 'std::pair<const float,double>::pair<int,int,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
+          with
+          [
+              _Other1=int,
+              _Other2=int
+          ]
+  Frames.cpp
+C:\Users\abhim\Desktop\Simulator\source\inc\Logger.h(26,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\Frames.cpp(8,111): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+          with
+          [
+              T=uint
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Frames.cpp(9,26): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+          with
+          [
+              T=uint
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Frames.cpp(10,97): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+          with
+          [
+              T=uint
+          ]
+  GUI.cpp
+C:\Users\abhim\Desktop\Simulator\source\inc\Logger.h(26,21): warning C4018: '<': signed/unsigned mismatch
+  Program.cpp
+C:\Users\abhim\Desktop\Simulator\source\inc\Logger.h(26,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(12,44): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(12,50): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(12,56): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(21,47): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(21,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(27,23): warning C4244: '=': conversion from 'float' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(28,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(32,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(36,52): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(37,31): warning C4244: '=': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(38,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(49,15): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(53,10): warning C4244: 'return': conversion from 'uint' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Antenna.h(65,14): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(72,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(130,51): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(151,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(178,15): warning C4018: '>': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(189,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(214,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\PhyRate.h(21,35): warning C4244: '=': conversion from 'double' to 'unsigned int', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(49,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(154,114): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(158,67): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(163,31): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\Mac.h(43,42): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Mac.h(36,11): warning C4101: 'per': unreferenced local variable
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(70,8): warning C4101: 'rc': unreferenced local variable
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(92,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(117,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(119,32): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=double
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(124,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(130,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(139,54): warning C4244: '=': conversion from 'T' to 'uint', possible loss of data
+          with
+          [
+              T=double
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(141,72): warning C4244: 'argument': conversion from 'T' to '_Ty', possible loss of data
+          with
+          [
+              T=double
+          ]
+          and
+          [
+              _Ty=float
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(142,37): warning C4244: '=': conversion from 'T' to 'uint', possible loss of data
+          with
+          [
+              T=double
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(143,55): warning C4244: '=': conversion from 'T' to 'uint', possible loss of data
+          with
+          [
+              T=double
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(144,54): warning C4244: '=': conversion from 'T' to 'uint', possible loss of data
+          with
+          [
+              T=double
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(145,37): warning C4244: '=': conversion from 'T' to 'uint', possible loss of data
+          with
+          [
+              T=double
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(146,32): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=double
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(151,34): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=double
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(160,15): warning C4244: 'initializing': conversion from 'double' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(174,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(177,9): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(197,33): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(201,35): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(217,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(234,24): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(295,33): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(319,31): warning C4244: '+=': conversion from 'double' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(322,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(324,46): warning C4244: 'argument': conversion from 'double' to 'const unsigned int', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Program.cpp(343,8): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\utility(193,16): warning C4244: 'initializing': conversion from '_Ty' to '_Ty1', possible loss of data
+          with
+          [
+              _Ty=int
+          ]
+          and
+          [
+              _Ty1=float
+          ]
+C:\Users\abhim\Desktop\Simulator\source\inc\Antenna.h(21): message : see reference to function template instantiation 'std::pair<_Kty,_Ty>::pair<int,double,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
+          with
+          [
+              _Kty=float,
+              _Ty=float,
+              _Other1=int,
+              _Other2=double
+          ]
+C:\Users\abhim\Desktop\Simulator\source\inc\Antenna.h(21): message : see reference to function template instantiation 'std::pair<_Kty,_Ty>::pair<int,double,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
+          with
+          [
+              _Kty=float,
+              _Ty=float,
+              _Other1=int,
+              _Other2=double
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\utility(193,54): warning C4244: 'initializing': conversion from '_Ty' to '_Ty2', possible loss of data
+          with
+          [
+              _Ty=double
+          ]
+          and
+          [
+              _Ty2=float
+          ]
+C:\Users\abhim\Desktop\Simulator\source\inc\common.h(84,1): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\common.h(90): message : see reference to function template instantiation 'float sum<double>(std::vector<double,std::allocator<double>> &)' being compiled
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(54): message : see reference to function template instantiation 'float ave<double>(std::vector<double,std::allocator<double>> &)' being compiled
+  Station_main.cpp
+C:\Users\abhim\Desktop\Simulator\source\inc\Logger.h(26,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(12,44): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(12,50): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(12,56): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(21,47): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(21,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(27,23): warning C4244: '=': conversion from 'float' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(28,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(32,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(36,52): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(37,31): warning C4244: '=': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(38,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(49,15): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(53,10): warning C4244: 'return': conversion from 'uint' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Antenna.h(65,14): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(72,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(130,51): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(151,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(178,15): warning C4018: '>': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(189,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(214,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\PhyRate.h(21,35): warning C4244: '=': conversion from 'double' to 'unsigned int', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(49,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(154,114): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(158,67): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(163,31): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\Mac.h(43,42): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Mac.h(36,11): warning C4101: 'per': unreferenced local variable
+C:\Users\abhim\Desktop\Simulator\source\src\Station_main.cpp(429,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Station_main.cpp(556,79): warning C4244: '=': conversion from 'float' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Station_main.cpp(556,47): warning C4244: '=': conversion from 'uint' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Station_main.cpp(593,40): warning C4244: '=': conversion from '_Ty2' to 'float', possible loss of data
+          with
+          [
+              _Ty2=uint
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Station_main.cpp(595,40): warning C4244: '=': conversion from 'float' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Station_main.cpp(638,17): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Station_main.cpp(639,32): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Station_main.cpp(646,40): warning C4244: '=': conversion from '_Ty2' to 'float', possible loss of data
+          with
+          [
+              _Ty2=uint
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\utility(193,16): warning C4244: 'initializing': conversion from '_Ty' to '_Ty1', possible loss of data
+          with
+          [
+              _Ty=int
+          ]
+          and
+          [
+              _Ty1=float
+          ]
+C:\Users\abhim\Desktop\Simulator\source\inc\Antenna.h(21): message : see reference to function template instantiation 'std::pair<_Kty,_Ty>::pair<int,double,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
+          with
+          [
+              _Kty=float,
+              _Ty=float,
+              _Other1=int,
+              _Other2=double
+          ]
+C:\Users\abhim\Desktop\Simulator\source\inc\Antenna.h(21): message : see reference to function template instantiation 'std::pair<_Kty,_Ty>::pair<int,double,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
+          with
+          [
+              _Kty=float,
+              _Ty=float,
+              _Other1=int,
+              _Other2=double
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\utility(193,54): warning C4244: 'initializing': conversion from '_Ty' to '_Ty2', possible loss of data
+          with
+          [
+              _Ty=double
+          ]
+          and
+          [
+              _Ty2=float
+          ]
+C:\Users\abhim\Desktop\Simulator\source\inc\common.h(84,1): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\common.h(90): message : see reference to function template instantiation 'float sum<double>(std::vector<double,std::allocator<double>> &)' being compiled
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(54): message : see reference to function template instantiation 'float ave<double>(std::vector<double,std::allocator<double>> &)' being compiled
+  Station_timers.cpp
+C:\Users\abhim\Desktop\Simulator\source\inc\Logger.h(26,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(12,44): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(12,50): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(12,56): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(21,47): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(21,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(27,23): warning C4244: '=': conversion from 'float' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(28,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(32,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(36,52): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(37,31): warning C4244: '=': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(38,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(49,15): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(53,10): warning C4244: 'return': conversion from 'uint' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Antenna.h(65,14): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(72,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(130,51): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(151,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(178,15): warning C4018: '>': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(189,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(214,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\PhyRate.h(21,35): warning C4244: '=': conversion from 'double' to 'unsigned int', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(49,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(154,114): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(158,67): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(163,31): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\Mac.h(43,42): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Mac.h(36,11): warning C4101: 'per': unreferenced local variable
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\utility(193,16): warning C4244: 'initializing': conversion from '_Ty' to '_Ty1', possible loss of data
+          with
+          [
+              _Ty=int
+          ]
+          and
+          [
+              _Ty1=float
+          ]
+C:\Users\abhim\Desktop\Simulator\source\inc\Antenna.h(21): message : see reference to function template instantiation 'std::pair<_Kty,_Ty>::pair<int,double,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
+          with
+          [
+              _Kty=float,
+              _Ty=float,
+              _Other1=int,
+              _Other2=double
+          ]
+C:\Users\abhim\Desktop\Simulator\source\inc\Antenna.h(21): message : see reference to function template instantiation 'std::pair<_Kty,_Ty>::pair<int,double,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
+          with
+          [
+              _Kty=float,
+              _Ty=float,
+              _Other1=int,
+              _Other2=double
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\utility(193,54): warning C4244: 'initializing': conversion from '_Ty' to '_Ty2', possible loss of data
+          with
+          [
+              _Ty=double
+          ]
+          and
+          [
+              _Ty2=float
+          ]
+C:\Users\abhim\Desktop\Simulator\source\inc\common.h(84,1): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\common.h(90): message : see reference to function template instantiation 'float sum<double>(std::vector<double,std::allocator<double>> &)' being compiled
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(54): message : see reference to function template instantiation 'float ave<double>(std::vector<double,std::allocator<double>> &)' being compiled
+  Timers.cpp
+C:\Users\abhim\Desktop\Simulator\source\inc\Logger.h(26,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(72,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(130,51): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(151,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(178,15): warning C4018: '>': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(189,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(214,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\src\Timers.cpp(7,11): warning C4244: 'initializing': conversion from 'double' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Timers.cpp(7,39): warning C4244: 'initializing': conversion from 'double' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Timers.cpp(9,35): warning C4244: 'argument': conversion from 'double' to '_Ty', possible loss of data
+          with
+          [
+              _Ty=std::seed_seq::result_type
+          ]
+C:\Users\abhim\Desktop\Simulator\source\src\Timers.cpp(39,18): warning C4244: 'initializing': conversion from 'double' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\Timers.cpp(67,20): warning C4018: '<=': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\Timers.cpp(134,36): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+  TrafficGen.cpp
+C:\Users\abhim\Desktop\Simulator\source\inc\Logger.h(26,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(12,44): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(12,50): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(12,56): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(21,47): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(21,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(27,23): warning C4244: '=': conversion from 'float' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(28,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(32,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(36,52): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(37,31): warning C4244: '=': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(38,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(49,15): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(53,10): warning C4244: 'return': conversion from 'uint' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Antenna.h(65,14): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(72,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(130,51): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(151,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(178,15): warning C4018: '>': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(189,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(214,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\PhyRate.h(21,35): warning C4244: '=': conversion from 'double' to 'unsigned int', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(49,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(154,114): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(158,67): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(163,31): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\Mac.h(43,42): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Mac.h(36,11): warning C4101: 'per': unreferenced local variable
+C:\Users\abhim\Desktop\Simulator\source\src\TrafficGen.cpp(9,52): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\abhim\Desktop\Simulator\source\src\TrafficGen.cpp(13,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\TrafficGen.cpp(18,20): warning C4244: '=': conversion from 'double' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\TrafficGen.cpp(23,39): warning C4244: '=': conversion from 'uint' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\TrafficGen.cpp(24,23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\src\TrafficGen.cpp(40,24): warning C4018: '>': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\TrafficGen.cpp(69,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\src\TrafficGen.cpp(114,28): warning C4244: 'return': conversion from 'float' to 'uint', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\utility(193,16): warning C4244: 'initializing': conversion from '_Ty' to '_Ty1', possible loss of data
+          with
+          [
+              _Ty=int
+          ]
+          and
+          [
+              _Ty1=float
+          ]
+C:\Users\abhim\Desktop\Simulator\source\inc\Antenna.h(21): message : see reference to function template instantiation 'std::pair<_Kty,_Ty>::pair<int,double,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
+          with
+          [
+              _Kty=float,
+              _Ty=float,
+              _Other1=int,
+              _Other2=double
+          ]
+C:\Users\abhim\Desktop\Simulator\source\inc\Antenna.h(21): message : see reference to function template instantiation 'std::pair<_Kty,_Ty>::pair<int,double,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
+          with
+          [
+              _Kty=float,
+              _Ty=float,
+              _Other1=int,
+              _Other2=double
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\utility(193,54): warning C4244: 'initializing': conversion from '_Ty' to '_Ty2', possible loss of data
+          with
+          [
+              _Ty=double
+          ]
+          and
+          [
+              _Ty2=float
+          ]
+C:\Users\abhim\Desktop\Simulator\source\inc\common.h(84,1): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\common.h(90): message : see reference to function template instantiation 'float sum<double>(std::vector<double,std::allocator<double>> &)' being compiled
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(54): message : see reference to function template instantiation 'float ave<double>(std::vector<double,std::allocator<double>> &)' being compiled
+  WiFi_Main.cpp
+C:\Users\abhim\Desktop\Simulator\source\inc\Logger.h(26,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(12,44): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(12,50): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(12,56): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(21,47): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Location.h(21,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(27,23): warning C4244: '=': conversion from 'float' to 'uint', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(28,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(32,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(36,52): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(37,31): warning C4244: '=': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(38,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(49,15): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\WirelessChannel.h(53,10): warning C4244: 'return': conversion from 'uint' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Antenna.h(65,14): warning C4018: '<': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(72,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(130,51): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(151,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(178,15): warning C4018: '>': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(189,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\timers.h(214,37): warning C4806: '==': unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+C:\Users\abhim\Desktop\Simulator\source\inc\PhyRate.h(21,35): warning C4244: '=': conversion from 'double' to 'unsigned int', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(49,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(154,114): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(158,67): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(163,31): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\abhim\Desktop\Simulator\source\inc\Mac.h(43,42): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\Mac.h(36,11): warning C4101: 'per': unreferenced local variable
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\utility(193,16): warning C4244: 'initializing': conversion from '_Ty' to '_Ty1', possible loss of data
+          with
+          [
+              _Ty=int
+          ]
+          and
+          [
+              _Ty1=float
+          ]
+C:\Users\abhim\Desktop\Simulator\source\inc\Antenna.h(21): message : see reference to function template instantiation 'std::pair<_Kty,_Ty>::pair<int,double,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
+          with
+          [
+              _Kty=float,
+              _Ty=float,
+              _Other1=int,
+              _Other2=double
+          ]
+C:\Users\abhim\Desktop\Simulator\source\inc\Antenna.h(21): message : see reference to function template instantiation 'std::pair<_Kty,_Ty>::pair<int,double,0>(_Other1 &&,_Other2 &&) noexcept' being compiled
+          with
+          [
+              _Kty=float,
+              _Ty=float,
+              _Other1=int,
+              _Other2=double
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\utility(193,54): warning C4244: 'initializing': conversion from '_Ty' to '_Ty2', possible loss of data
+          with
+          [
+              _Ty=double
+          ]
+          and
+          [
+              _Ty2=float
+          ]
+C:\Users\abhim\Desktop\Simulator\source\inc\common.h(84,1): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\abhim\Desktop\Simulator\source\inc\common.h(90): message : see reference to function template instantiation 'float sum<double>(std::vector<double,std::allocator<double>> &)' being compiled
+C:\Users\abhim\Desktop\Simulator\source\inc\Indication.h(54): message : see reference to function template instantiation 'float ave<double>(std::vector<double,std::allocator<double>> &)' being compiled
+  Generating Code...
+  Simulator.vcxproj -> C:\Users\abhim\Desktop\Simulator\Debug\Simulator.exe
