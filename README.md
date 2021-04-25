@@ -8,7 +8,7 @@ Introduction:
 
 This repository holds source-code for my long-distance Wi-Fi network simulation model originally used to defend my thesis at Montana Tech of the University of Montana, November 2017. I will be expanding the functionality later as time permits.
 
-If you’re interested in rapid prototyping and need to get up to speed with data structures of my network simulator, all explanation is hosted in here digitalcommons.mtech.edu/grad_rsch/141. You can also read the results of the simulations and take note of what exactly I changed and omitted from the original specification as stated in the IEE802.11-2012 standard (preview here: evs.ee/preview/iso-iec-ieee-8802-11-2012-en.pdf).
+If you’re interested in rapid prototyping and need to get up to speed with data structures of my network simulator, all explanation is hosted at the [University of Montana page](https://digitalcommons.mtech.edu/grad_rsch/141/). You can also read the results of the simulations and take note of what exactly I changed and omitted from the original specification as stated in the IEE802.11-2012 standard (preview here: evs.ee/preview/iso-iec-ieee-8802-11-2012-en.pdf).
 
 
 Goal of the simulations:
