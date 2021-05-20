@@ -49,4 +49,4 @@ To check out the simulation statistics, go to the folder of the source code, and
 
 How to contribute: 
 
-If you want to contribute to the project, contact me and we'll setup a time for our discussion/code-review. This project was solely made by me. Some of the error conditions must never take place as a result of extensive debugging. If you encounter backoff errors and errors from various timers, then you have seriously broken one or more parts of the code - just a hint. In some cases of the debug, it is virtually impossible to debug the code without the timeline. Avoid conditional breakpoints which will slow down the simulations by several orders of magnitude, especially when you're waiting to reach a certain simulation time. The original software used to create this model was Visual Studio 2015, and QT 5.8.
+Please fork and read up on my master's thesis or internet resources on Wi-Fi models for more information. The original software used to create this model was Visual Studio 2015, and QT 5.8.
