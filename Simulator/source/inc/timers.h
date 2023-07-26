@@ -1,8 +1,9 @@
 #pragma once
-#include "common.h"
-#include "Frames.h"
 #include <chrono>
 #include <math.h>
+#include <sys/stat.h>
+#include "common.h"
+#include "Frames.h"
 #define OFF -1
 
 class Backoff
@@ -135,7 +136,7 @@ struct tRTSNAV : Timer
 	}
 	void tout_update(uint time)
 	{
-		end_time_tout = INFINITE;
+		end_time_tout = UINT_MAX;
 	}
 	// TODO shouldn't be infinite, it should be end time of the CTS so that the RTS nav can get update even after that in long dist model
 	void nav_update(uint cts_end)

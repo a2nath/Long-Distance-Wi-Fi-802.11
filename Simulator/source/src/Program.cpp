@@ -1,14 +1,19 @@
 #include <typeinfo>
 #include <iomanip>
-#include <direct.h>
 #include <chrono>
-#include <algorithm>
 #include "../inc/Program.h"
 
 #define AP_MODE
 #define str2uint str2num<uint>
 #define str2double str2num<double>
 #define str2long str2num<unsigned long int>
+
+#ifdef _WIN32
+#include <direct.h>
+#define mkdir _mkdir
+#else
+#define mkdir(path) mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
+#endif
 
 vector<station_number> inters;
 int progress_printed = -1;
@@ -238,10 +243,10 @@ void Program::setup()
 #endif
 	}
 
-	_mkdir("Results");
+	mkdir("Results");
 	path = "Results/" + create_tstamp() + (Global::prop_factor > 1.0 ? "" : ("-L-" + num2str(Global::aCWmax)
 		+ "-" + num2str(Global::aCWmin) )) + "/";
-	_mkdir(path.c_str());
+	mkdir(path.c_str());
 
 	/* initialize the gui_map */
 	gcellvector init(Global::produration);

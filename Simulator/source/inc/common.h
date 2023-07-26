@@ -4,9 +4,11 @@
 #include <unordered_map>
 #include <map>
 #include <memory>
+#include <limits>
+#include <climits>
+#include <algorithm>
 #include "Links.h"
 #include "Logger.h"
-#include <Windows.h>
 #include <sstream>
 
 #define DETERMINISTIC
@@ -14,21 +16,43 @@
 #define SHOWOUT
 //#define REDUNDANT_RETRIES
 
-#define error_out( s )            \
-{                             \
-	logs.done(" with error ");				   \
-	std::wostringstream os_;    \
-	os_ << s << "\n";                   \
-	OutputDebugStringW( os_.str().c_str() );	\
-	throw;	\
+#ifdef _WIN32
+#include <Windows.h>
+#define error_out( s )                                     \
+{                                                          \
+	logs.done(" with error ");				               \
+	std::wostringstream os_;                               \
+	os_ << s << "\n";                                      \
+	OutputDebugStringW( os_.str().c_str() );	           \
+	throw;	                                               \
+}
+#define debugout( p )                                      \
+{                                                          \
+	std::wostringstream os_;                               \
+	os_ << p;                                              \
+	OutputDebugStringW( os_.str().c_str() );	           \
 }
 
-#define debugout( p )            \
-{                             \
-	std::wostringstream os_;    \
-	os_ << p;                   \
-	OutputDebugStringW( os_.str().c_str() );	\
+#else
+
+#define error_out( s )                                    \
+{                                                         \
+    stringstream oss;                                     \
+    cerr.rdbuf( oss.rdbuf() );                            \
+    logs.done(" with error. Error " + oss.str());         \
+    throw;                                                \
 }
+#define debugout( p )                                     \
+{                                                         \
+    stringstream oss;                                     \
+    streambuf* old = cerr.rdbuf( oss.rdbuf() );           \
+    cerr << " " << p;                                     \
+    cout << oss.str();                                    \
+    cerr.rdbuf( old );                                    \
+}
+
+#endif
+
 typedef unsigned int uint;
 typedef uint rts_release_time;
 typedef uint rts_queued_time;

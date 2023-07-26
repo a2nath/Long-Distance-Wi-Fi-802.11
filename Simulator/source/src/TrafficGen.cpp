@@ -55,7 +55,10 @@ TrafficGenerator::TrafficGenerator(uint phyid, uivector &dests, McsManager *mcs_
 
 		// sort both
 		dest_index_vector.resize(payload_events.size());
-		std::generate(dest_index_vector.begin(), dest_index_vector.end(), [&] { return n++; }); //populate the index vector with increasing vals
+
+		//populate the index vector with increasing vals
+		for (unsigned i = 0; i < dest_index_vector.size(); ++i) dest_index_vector[i] = i++;
+
 		std::sort(dest_index_vector.begin(), dest_index_vector.end(), // re-arrange index as per sorting permutation done on the events vector
 			[&](const int& a, const int& b) { return (payload_events[a] < payload_events[b]); });
 		std::sort(payload_events.begin(), payload_events.end());

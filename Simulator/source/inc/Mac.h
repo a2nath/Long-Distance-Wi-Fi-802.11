@@ -9,7 +9,7 @@ struct McsManager
 	uint& operator[](station_number station) { link[station].dead = false; return link[station].mcs; }
 	bool& operator()(station_number station) { return link.at(station).dead; }
 	lpair at(station_number station) { return link.at(station); }
-	auto mcss() { umap<station_number, mcs_index> ret; for (auto m : link) ret[m.first] = m.second.mcs; return ret; }
+	umap<station_number, mcs_index> mcss() { umap<station_number, mcs_index> ret; for (auto m : link) ret[m.first] = m.second.mcs; return ret; }
 	bool dead(station_number station, bool isdead) { return link.at(station).dead = isdead; }
 	bool find(station_number station) { return link.find(station) != link.end(); }
 };
@@ -62,7 +62,7 @@ public:
 		return &lnkmodes;
 	}
 
-	auto mcs_map(station_number station)
+	unsigned mcs_map(station_number station)
 	{
 		return lnkmodes.at(station).mcs;
 	}

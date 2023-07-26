@@ -30,7 +30,7 @@ public:
 	struct transmit_state
 	{
 		booltimer start, end;
-		void operator()() { start = { false,INFINITE }, end = { false, INFINITE }; }
+		void operator()() { start = { false, UINT_MAX }, end = { false, UINT_MAX }; }
 	} tx, rx;
 	Indication(uint station_ID, transciever_mode *state, WirelessChannel *channel)
 		: preamble_found(false), self_id(station_ID), ant_state(state), max_signal_source(-1),
