@@ -1,5 +1,5 @@
 #pragma once
-#include "../inc/common.h"
+#include "common.h"
 #ifdef SHOWGUI
 #include <QtWidgets>
 #include <QWheelEvent>

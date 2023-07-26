@@ -118,6 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,41 +142,41 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\source\src\Common.cpp" />
-    <ClCompile Include="..\source\src\Frames.cpp" />
-    <ClCompile Include="..\source\src\GUI.cpp" />
-    <ClCompile Include="..\source\src\Program.cpp" />
-    <ClCompile Include="..\source\src\Station_main.cpp" />
-    <ClCompile Include="..\source\src\Station_timers.cpp" />
-    <ClCompile Include="..\source\src\Timers.cpp" />
-    <ClCompile Include="..\source\src\TrafficGen.cpp" />
-    <ClCompile Include="..\source\src\WiFi_Main.cpp" />
+    <ClInclude Include="..\..\source\inc\Antenna.h" />
+    <ClInclude Include="..\..\source\inc\common.h" />
+    <ClInclude Include="..\..\source\inc\Event.h" />
+    <ClInclude Include="..\..\source\inc\Field.h" />
+    <ClInclude Include="..\..\source\inc\FrameBox.h" />
+    <ClInclude Include="..\..\source\inc\Frames.h" />
+    <ClInclude Include="..\..\source\inc\gcommon.h" />
+    <ClInclude Include="..\..\source\inc\Grid.h" />
+    <ClInclude Include="..\..\source\inc\GUI.h" />
+    <ClInclude Include="..\..\source\inc\Indication.h" />
+    <ClInclude Include="..\..\source\inc\LabelBox.h" />
+    <ClInclude Include="..\..\source\inc\Lines.h" />
+    <ClInclude Include="..\..\source\inc\Links.h" />
+    <ClInclude Include="..\..\source\inc\Location.h" />
+    <ClInclude Include="..\..\source\inc\Logger.h" />
+    <ClInclude Include="..\..\source\inc\Mac.h" />
+    <ClInclude Include="..\..\source\inc\Phy.h" />
+    <ClInclude Include="..\..\source\inc\PhyRate.h" />
+    <ClInclude Include="..\..\source\inc\Program.h" />
+    <ClInclude Include="..\..\source\inc\Scroller.h" />
+    <ClInclude Include="..\..\source\inc\Station.h" />
+    <ClInclude Include="..\..\source\inc\timers.h" />
+    <ClInclude Include="..\..\source\inc\TrafficGen.h" />
+    <ClInclude Include="..\..\source\inc\WirelessChannel.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\source\inc\Antenna.h" />
-    <ClInclude Include="..\source\inc\common.h" />
-    <ClInclude Include="..\source\inc\Event.h" />
-    <ClInclude Include="..\source\inc\Field.h" />
-    <ClInclude Include="..\source\inc\FrameBox.h" />
-    <ClInclude Include="..\source\inc\Frames.h" />
-    <ClInclude Include="..\source\inc\gcommon.h" />
-    <ClInclude Include="..\source\inc\Grid.h" />
-    <ClInclude Include="..\source\inc\GUI.h" />
-    <ClInclude Include="..\source\inc\Indication.h" />
-    <ClInclude Include="..\source\inc\LabelBox.h" />
-    <ClInclude Include="..\source\inc\Lines.h" />
-    <ClInclude Include="..\source\inc\Links.h" />
-    <ClInclude Include="..\source\inc\Location.h" />
-    <ClInclude Include="..\source\inc\Logger.h" />
-    <ClInclude Include="..\source\inc\Mac.h" />
-    <ClInclude Include="..\source\inc\Phy.h" />
-    <ClInclude Include="..\source\inc\PhyRate.h" />
-    <ClInclude Include="..\source\inc\Program.h" />
-    <ClInclude Include="..\source\inc\Scroller.h" />
-    <ClInclude Include="..\source\inc\Station.h" />
-    <ClInclude Include="..\source\inc\timers.h" />
-    <ClInclude Include="..\source\inc\TrafficGen.h" />
-    <ClInclude Include="..\source\inc\WirelessChannel.h" />
+    <ClCompile Include="..\..\source\src\Common.cpp" />
+    <ClCompile Include="..\..\source\src\Frames.cpp" />
+    <ClCompile Include="..\..\source\src\GUI.cpp" />
+    <ClCompile Include="..\..\source\src\Program.cpp" />
+    <ClCompile Include="..\..\source\src\Station_main.cpp" />
+    <ClCompile Include="..\..\source\src\Station_timers.cpp" />
+    <ClCompile Include="..\..\source\src\Timers.cpp" />
+    <ClCompile Include="..\..\source\src\TrafficGen.cpp" />
+    <ClCompile Include="..\..\source\src\WiFi_Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

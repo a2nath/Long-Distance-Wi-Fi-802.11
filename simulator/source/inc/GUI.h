@@ -2,12 +2,12 @@
 #include "common.h"
 #ifdef SHOWGUI
 #include <QtWidgets>
-#include "../inc/qpainter.h"
-#include "../inc/Lines.h"
-#include "../inc/Scroller.h"
-#include "../inc/FrameBox.h"
-#include "../inc/LabelBox.h"
-#include "../inc/Grid.h"
+#include "qpainter.h"
+#include "Lines.h"
+#include "Scroller.h"
+#include "FrameBox.h"
+#include "LabelBox.h"
+#include "Grid.h"
 
 #define WIDTH 1920
 #define HEIGHT 600
