@@ -7,7 +7,7 @@ private:
 	float x, y, z;
 
 public:
-	Location(){ this->x = NAN; this->y = NAN; this->x = NAN; }
+	Location() : x(NAN), y(NAN), z(NAN) {}
 
 	Location(double x, double y, double z) : x(x), y(y), z(z) {}
 

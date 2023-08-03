@@ -32,7 +32,6 @@ public:
 	~Program();
 	void done();
 	void setup();
-	vector<vector<string>> readfile(string filename, vector<string>* buffer = NULL);
 	void run();
 	void summary();
 	gcelltable getgui();

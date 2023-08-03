@@ -142,7 +142,7 @@ public:
 		{
 			max_signal_source = mstation_by_sigstrength_; //this object changes because max source changes.
 														  //if (!signal_strength.size()) return;
-			float SINR;
+			double SINR;
 			int back_in_time = current_time - propmap.at(max_signal_source);
 			Frame * frame = wireless_channel[max_signal_source][back_in_time].get();
 			auto previous_frame = wireless_channel[max_signal_source][back_in_time - 1].get();
@@ -151,7 +151,7 @@ public:
 			auto real_idx = frame->get_mcs_idx();
 			if (signal_strength.size() > 1)
 			{
-				SINR = ((int)(lin2dB(max / ((noise.size() > 1 ? sum(noise) : noise[0]) + ei_system_noise)) * (double)100.0)) / (double)100.0;
+				SINR = ((int)(lin2dB(max / ((double)(noise.size() > 1 ? sum(noise) : noise[0]) + ei_system_noise)) * (double)100.0)) / (double)100.0;
 			}
 			else
 			{

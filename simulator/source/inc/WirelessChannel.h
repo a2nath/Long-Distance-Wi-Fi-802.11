@@ -13,8 +13,8 @@ private:
 	float EI_Noise;
 
 	uint self_id;
-	uint bandwidth;
-	umap<station_number, float> hmatrixMap, distanceMap;
+	float bandwidth;
+	umap<station_number, double> hmatrixMap, distanceMap;
 	umap<station_number, prop_del_us> propagationMap;
 
 public:
@@ -25,14 +25,14 @@ public:
 		auto station_count = Global::station_count;
 		auto polar_info = antenna_prop;
 		bandwidth = Global::bandwidth;
-		thermal_noise = thermal_per_bandwidth + 10 * log10(bandwidth);
+		thermal_noise = thermal_per_bandwidth + 10.0 * log10(bandwidth);
 		EI_Noise = thermal_noise + system_noise_figure;
 
-		auto gain1 = name == Global::ap_station ? G_ap : G_cl;
-		for (int sta = 0; sta < station_count; ++sta)
+		double gain1 = name == Global::ap_station ? G_ap : G_cl;
+		for (uint sta = 0; sta < station_count; ++sta)
 		{
 			if (sta == self_id) continue;
-			auto gain2 = Global::sta_name_map[Global::ap_station] == sta ? G_ap : G_cl;
+			double gain2 = Global::sta_name_map[Global::ap_station] == sta ? G_ap : G_cl;
 			distanceMap[sta] = distance.at(self_id).at(sta) * 1e3;
 			propagationMap[sta] = round(propfactor > 1.0 ? 1 : propfactor * s2micro((double)(distanceMap.at(sta) / lightspeed)));
 			hmatrixMap[sta] =  gain1 + gain2 - pathloss.at(self_id).at(sta);

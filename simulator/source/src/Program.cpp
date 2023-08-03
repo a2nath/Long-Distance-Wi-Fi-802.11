@@ -80,65 +80,43 @@ string create_tstamp() {
 	return string(timestamp);
 }
 
-vector<vector<string>> Program::readfile(string filename, vector<string> *buffer)
-{
-	string infileptr;
-	vector<string> a_row, csvline;
-	vector<vector<string>> output_table;
-	std::ifstream infile(filename);
-
-	while (!infile.eof()) // To get you all the lines.
-	{
-		getline(infile, infileptr);
-		a_row.push_back(infileptr);
-	}
-	// Read the input file for simulation parameters
-	infile.close();
-	for (int i = 0; i < a_row.size(); i++)
-	{
-		if (buffer != NULL) buffer->push_back(a_row[i]);
-		if (a_row[i][0] == '#' || a_row[i][0] == '\n') continue;
-		auto& line = a_row[i];
-		stringstream ss(line);
-		while (ss.good())
-		{
-			string substr;
-			getline(ss, substr, ',');
-			csvline.push_back(substr);
-		}
-		if (csvline.size() > 1)
-			if (filename == "../simulation_params.txt") csvline.erase(csvline.begin());
-
-		output_table.push_back(csvline);
-		csvline.clear();
-	}
-	return output_table;
-}
 void Program::setup()
 {
 	/* Read the station names */
-	auto output = readfile("linux/station_names.txt");
-	vector<vector<string>> sta_names(output.size() - 2);
-	for (int i = 0; i < output.size() - 2; ++i)
-		for (auto &cell : output[i]) sta_names[i].push_back(cell);
-	Global::frequency = str2double(output[output.size() - 1][0]);
+	vector<vector<string>> output;
+	vector<vector<string>> sta_names;
+	vector<vector<double>> sta_distances;
+	vector<vector<double>> sta_pathlosses;
+
+	chdir("../");
+	system("echo \"%cd%\"");
+	IO::readfile(input_dir + in_mapping_file, output);
+
+	sta_names.resize(output.size(), vector<string>(output.size()));
+	sta_distances.resize(sta_names.size(), vector<double>(sta_names.size()));
+	sta_pathlosses.resize(sta_names.size(), vector<double>(sta_names.size()));
+
+	for (int i = 0; i < sta_names.size(); ++i)
+		for (int j = 0; j < sta_names[i].size(); ++j)
+			sta_names[i][j] = output[i][j];
 
 	/* Read the MxM Distance table (km) */
-	output = readfile("linux/distance_table.txt");
-	vector<vector<double>> sta_distances(output.size());
-	for (int i = 0; i < output.size(); ++i)
-		for (auto &cell : output[i]) sta_distances[i].push_back(str2double(cell));
+	IO::readfile(input_dir + in_distance_map, output);
+
+	for (int i = 0; i < sta_distances.size(); ++i)
+		for (int j = 0; j < sta_distances[i].size(); ++j)
+			sta_distances[i][j] = str2double(output[i][j]);
 
 	/* Read the MxM Pathloss table (dB) */
-	output = readfile("linux/pathloss_table.txt");
-	vector<vector<double>> sta_pathlosses(output.size());
-	for (int i = 0; i < output.size(); ++i)
-		for (auto &cell : output[i]) sta_pathlosses[i].push_back(str2double(cell));
+	IO::readfile(input_dir + in_pathloss_map, output);
+
+	for (int i = 0; i < sta_pathlosses.size(); ++i)
+		for (int j = 0; j < sta_pathlosses[i].size(); ++j)
+			sta_pathlosses[i][j] = str2double(output[i][j]);
 
 	/* Read the input parameters from the INPUT file */
-	vector<string> buff;
 	vector<string> selected_stations;
-	output = readfile("simulation_params.txt", &buff);
+	vector<string> input_file_contents = IO::readfile(input_dir + in_simulation_params, output, true);
 
 	Global::traffic_type = output[conns][0] == "udp" ? 0 : 1;
 	Global::DEBUG_END = str2double(output[debugend][0]) * 1000;
@@ -169,7 +147,14 @@ void Program::setup()
 	dout("\n\n>>>>>>>>>>>>>>>>>>>>>>>   RETRY LIMIT: " + num2str(Global::dot11ShortRetryLimit) + "   <<<<<<<<<<<<<<<<<<");
 	dout(">>>>>>>>>>>>>>>>>>>>>>>   CWMAX: " + num2str(Global::aCWmax) + "      <<<<<<<<<<<<<<<<<<");
 	dout(">>>>>>>>>>>>>>>>>>>>>>>   CWMIN: " + num2str(Global::aCWmin) + "        <<<<<<<<<<<<<<<<<<\n\n");
+	// end of setting inputs
 
+	/* read the look up tables */
+	IO::read_packet_error_rate_lut();
+	IO::read_symbol_error_rate_lut();
+
+
+	/* setup the traffic generator and random number of generator */
 #ifndef DETERMINISTIC
 	for (auto& s : selected_stations) Global::seeds.push_back(std::random_device()());
 #else

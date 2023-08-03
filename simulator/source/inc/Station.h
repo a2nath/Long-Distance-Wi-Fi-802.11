@@ -83,8 +83,6 @@ private:
 		}
 		void delivered()
 		{
-			auto sta = getpair()->second->getDest();
-			auto seq = getpair()->second->getSequence();
 			buffer.erase(buffer.begin()); // this is always true - beginning has to be earliest frame
 		}
 		void discard() { delivered(); }

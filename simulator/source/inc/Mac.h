@@ -33,7 +33,6 @@ public:
 		auto antenna = phylayer->getAntenna();
 		for (auto &dest_id : Global::connections.dest(self_ID))
 		{
-			double per;
 			auto rx_signal_power = antenna->getChannel()->get_H_factor(dest_id) + Global::txpowers[self_ID];
 			auto noise = antenna->getChannel()->get_effective_noise_dBm();
 			double SNR = ((int)((rx_signal_power - noise) * (double)100.0)) / (double)100.0;

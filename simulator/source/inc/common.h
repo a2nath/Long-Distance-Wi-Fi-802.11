@@ -33,6 +33,7 @@
 	OutputDebugStringW( os_.str().c_str() );	           \
 }
 
+/* linux specific code */
 #else
 
 #define error_out( s )                                    \
@@ -52,6 +53,23 @@
 }
 
 #endif
+
+const std::string input_dir            = "inputs/";
+const std::string output_dir           = "results/";
+const std::string per_rate_file        = "lut_per_threshold_table.txt";
+const std::string error_rate_file      = "lut_error_rate_table.txt";
+const std::string in_mapping_file      = "splat_station_bindings.txt";
+const std::string in_distance_map      = "splat_distance_table.txt";
+const std::string in_pathloss_map      = "splat_pathloss_table.txt";
+const std::string in_simulation_params = "simulation_params.txt";
+
+namespace IO
+{
+	using namespace std;
+	void read_packet_error_rate_lut();
+	void read_symbol_error_rate_lut();
+	vector<string> readfile(string filename, vector<vector<string>>& out, bool = false);
+}
 
 typedef unsigned int uint;
 typedef uint rts_release_time;
@@ -103,7 +121,7 @@ template<typename T, typename U>
 using umap = std::unordered_map<T, U>;
 template <class U> float sum(std::vector<U> &list)
 {
-	float sum = 0;
+	double sum = 0;
 	for (auto &s : list)
 		sum += s;
 	return sum;
@@ -151,6 +169,7 @@ struct Logs {
 	vector<Logger*> stations;
 	Logger *through;
 	Logger *common;
+
 	void done(string s = "")
 	{
 		auto name = common->getname();
@@ -201,17 +220,17 @@ void dout(std::string message, bool error = 0);
 
 /* Physical layer parameters */
 // in dB
-const float G_ap = 12;
+const float G_ap = 12.0;
 // in dB
-const float G_cl = 2;
+const float G_cl = 2.0;
 // in MHz
 const uint frequency = 530;
 // in dB
-const float system_noise_figure = 5;
+const float system_noise_figure = 5.00;
 // SER table Min SNR
-const float snr_min = -10;
+const float snr_min = -10.0;
 // SER table Max SNR
-const float snr_max = 40;
+const float snr_max = 40.0;
 
 /* .11a constants  in microseconds */
 const uint dot11a_sifs = 16;
@@ -233,10 +252,10 @@ const uint max_mcs_count = 8;
 /* in number of slots for backoff window limits */
 /* backoff algo: choose random num between [0, CW], where aCWmin < CW < aCWmax */
 // in dBm
-const float thermal_per_bandwidth = -174;
+const float thermal_per_bandwidth = -174.0;
 
 // in dBm
-const float dot11_CCA_threshold = -82;
+const float dot11_CCA_threshold = -82.0;
 
 const uint RTSCTSACK_DUR = 5;
 const uint DATA_DUR = 5;

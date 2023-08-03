@@ -33,7 +33,7 @@ TrafficGenerator::TrafficGenerator(uint phyid, uivector &dests, McsManager *mcs_
 	if (dests.size() > 1)
 	{
 		std::uniform_int_distribution<int> destinations(0, dests.size() - 1);
-		int index(0), mx(0), count(0), n(0);
+		int mx(0), count(0);
 
 		for (auto& m : payload_event_mapping)
 		{
