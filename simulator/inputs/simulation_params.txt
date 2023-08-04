@@ -1,9 +1,10 @@
 connections,0,1,2,1,2,4
-traffi-load-mb,4,4,4,4,4,4
+traffic-load-mb,4,4,4,4,4,4
 contype,tcp
 program-dur-ms,10100
 sim-dur-ms,10000
 databytes-b,1500
+frequency,530e6
 bandwidth,20e6
 segments,1
 adaptive-tout,no

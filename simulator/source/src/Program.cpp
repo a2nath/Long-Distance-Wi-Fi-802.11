@@ -121,15 +121,19 @@ void Program::setup()
 	Global::traffic_type = output[conns][0] == "udp" ? 0 : 1;
 	Global::DEBUG_END = str2double(output[debugend][0]) * 1000;
 	ENDIT = Global::DEBUG_END;
-	for (auto& s : output[antpower]) Global::txpowers.push_back(str2double(s));
+
+	for (auto& s : output[antpower])
+		Global::txpowers.emplace_back(str2double(s));
+
 	Global::data_pack_size = str2double(output[datbytes][0]);
 	Global::produration = str2double(output[progdur][0]) * 1000; // in microseconds
 	Global::simduration = str2double(output[simdur][0]) * 1000; // in microseconds
 	Global::data_fragments = str2double(output[dsegments][0]);
+	Global::frequency = str2double(output[fquency][0]);
 	Global::bandwidth = str2double(output[bwidth][0]);
 	Global::adapt_int_tout = output[atout][0] == "yes" ? true : false;
 	selected_stations = output[stanames];
-	selected_stations.push_back(Global::ap_station);
+	selected_stations.emplace_back(Global::ap_station);
 	Global::station_count = selected_stations.size();
 	Global::prop_factor = str2double(output[pfactor][0]);
 	Global::chwindow = str2uint(output[chwdow][0]);
@@ -174,7 +178,9 @@ void Program::setup()
 
 	/* build the map of station and IDs*/
 	auto station_count = selected_stations.size();
-	if (Global::traffic_load.size() < station_count || Global::txpowers.size() != station_count) error_out("traffic load: Input file wrong");
+	if (Global::traffic_load.size() < station_count || Global::txpowers.size() != station_count)
+		error_out("traffic load: Input file wrong");
+
 	for (uint sta = 0; sta < station_count; ++sta)
 	{
 		Global::sta_name_map[selected_stations[sta]] = sta;
@@ -223,7 +229,8 @@ void Program::setup()
 #else
 	for (int sid = 0; sid < station_count; ++sid)
 	{
-		if (sid == Global::sta_name_map[Global::ap_station]) continue;
+		if (sid == Global::sta_name_map[Global::ap_station])
+			continue;
 		Global::connections.add2way(sid, Global::sta_name_map[Global::ap_station]);
 #endif
 	}
