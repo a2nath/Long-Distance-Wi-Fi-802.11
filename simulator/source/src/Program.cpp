@@ -85,7 +85,7 @@ void Program::setup()
 	vector<vector<double>> sta_pathlosses;
 
 	chdir("../");
-	system("echo \"%cd%\"");
+
 	IO::readfile(input_dir + in_mapping_file, output);
 
 	sta_names.resize(output.size(), vector<string>(output.size()));
@@ -183,7 +183,7 @@ void Program::setup()
 	}
 
 	/* Shortlist stations based on the selected stations in the input file */
-	vector<std::pair<int, int>> indices, indices2;
+	vector<pair<int, int>> indices, indices2;
 	for (auto &selected_sta : selected_stations)
 	{
 		for (int row_idx = 0; row_idx < sta_names.size(); ++row_idx)
@@ -196,9 +196,9 @@ void Program::setup()
 					{
 						if (sta_names[row_idx][col_idx] == selected_sta2)
 						{
-							indices.push_back(pair<int, int>(Global::sta_name_map[sta_names[row_idx][0]],
+							indices.emplace_back(pair<int, int>(Global::sta_name_map[sta_names[row_idx][0]],
 								Global::sta_name_map[sta_names[row_idx][col_idx]]));
-							indices2.push_back(pair<int,int>(row_idx, col_idx));
+							indices2.emplace_back(pair<int,int>(row_idx, col_idx));
 						}
 					}
 				}

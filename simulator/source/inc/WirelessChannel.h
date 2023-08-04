@@ -34,7 +34,16 @@ public:
 			if (sta == self_id) continue;
 			double gain2 = Global::sta_name_map[Global::ap_station] == sta ? G_ap : G_cl;
 			distanceMap[sta] = distance.at(self_id).at(sta) * 1e3;
-			propagationMap[sta] = round(propfactor > 1.0 ? 1 : propfactor * s2micro((double)(distanceMap.at(sta) / lightspeed)));
+
+			if (0 < propfactor && propfactor <= 1) //0 - 100% distance scale
+			{
+				propagationMap[sta] = round(propfactor * s2micro((double)(distanceMap.at(sta) / lightspeed)));
+			}
+			else
+			{
+				propagationMap[sta] = 1; // micro-second
+			}
+
 			hmatrixMap[sta] =  gain1 + gain2 - pathloss.at(self_id).at(sta);
 		}
 	}
