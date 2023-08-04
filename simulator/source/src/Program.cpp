@@ -8,13 +8,6 @@
 #define str2double str2num<double>
 #define str2long str2num<unsigned long int>
 
-#ifdef _WIN32
-#include <direct.h>
-#define mkdir _mkdir
-#else
-#define mkdir(path) mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
-#endif
-
 vector<station_number> inters;
 int progress_printed = -1;
 uint sliding_window = 0;
@@ -53,10 +46,12 @@ Program::~Program()
 	}
 	guimap.clear();
 }
+
 void Program::done()
 {
-	logs.done(num2str(system_time/(float)1000.0));
+	logs.done(double2str(system_time/1000.0, 3));
 }
+
 struct Program::otaobj
 {
 	struct ota_data { uint source, reltime, dur; };
@@ -71,6 +66,7 @@ struct Program::otaobj
 	ota_data operator[](uint idx) { return buff[idx]; }
 	ota_data last() { return buff.back(); }
 } otalist;
+
 string create_tstamp() {
 	char* rc;
 	char timestamp[30];
@@ -235,8 +231,8 @@ void Program::setup()
 #endif
 	}
 
-	mkdir("Results");
-	path = "Results/" + create_tstamp() + (Global::prop_factor > 1.0 ? "" : ("-L-" + num2str(Global::aCWmax)
+	mkdir(output_dir.c_str());
+	path = output_dir + create_tstamp() + (Global::prop_factor > 1.0 ? "" : ("-L-" + num2str(Global::aCWmax)
 		+ "-" + num2str(Global::aCWmin) )) + "/";
 	mkdir(path.c_str());
 
@@ -247,7 +243,7 @@ void Program::setup()
 	/* create stations and their logs */
 	for (uint sta = 0; sta < station_count; ++sta)
 	{
-		logs.stations.push_back(new Logger(path + "Station_" + num2str(sta) + " [" + selected_stations[sta] + "]"));
+		logs.stations.push_back(new Logger(sta, path, selected_stations[sta]));
 		station_list.push_back(sptrStation(new Station(selected_stations[sta], station_names, distance_table, pathloss_table, &guimap[sta])));
 	}
 	/* remove the dead links from the downlink if uplink thinks AP is unreachable (inefficient) */
@@ -280,9 +276,10 @@ void Program::setup()
 		auto a = mltimap2vector(Global::traffic_load, sta->getID());
 		loads.insert(loads.end(), a.begin(), a.end());
 	}
-	auto name = path + "Summary [" + num2str(loads);
-	logs.common = new Logger(name.substr(0, name.size() - 2) + "]");
-	logs.common->printstatus(buff, "seeds," + num2str(Global::seeds), num2str(Global::dot11ShortRetryLimit), seed);
+
+	auto filename =  "Summary [" + num2str(loads) + "]";
+	logs.common = new Logger(path, filename);
+	logs.common->print_input_file(input_file_contents, "seeds," + num2str(Global::seeds), num2str(Global::dot11ShortRetryLimit), seed);
 }
 
 void Program::phy_cca_indication(uint now, uint destination_id)
@@ -311,7 +308,7 @@ void Program::update_end_time(int now)
 	{
 		if (station->active())
 		{
-			if (Global::produration - now < 1e6)
+			if ((long int)Global::produration - (long int)now < 1e6)
 			{
 				Global::produration += 1e6;
 				end_time = Global::produration + 1;
@@ -518,39 +515,44 @@ void Program::run()
 }
 void Program::summary()
 {
-	logs.common->writeline("------------------------- Simulation Ended at " + num2str(end_time / (float)1000.0) + "ms");
-	logs.common->writeline("------------- Last time of packet, station " + num2str(otalist.last().source) + ", " + num2str(otalist.last().reltime / 1000.0) + "ms");
+	float endtime = end_time / (float)1000.0;
+	logs.common->writeline("Overall simulation duration (ms)   :\t" + double2str(endtime, 2));
+	logs.common->writeline("Last wireless channel utilization  :\tstation" + num2str(otalist.last().source) + ", " + num2str(otalist.last().reltime / 1000.0) + " ms");
 
-	uint last_dequeue = 0, time = 0;
+	uint last_dequeue = 0;
 	/* log station summary */
 	for (auto &sta : station_list)
 	{
 		logs.common->writeline("\n\n");
-		sta->summarize_results(logs.common, time);
-		if (time > last_dequeue) last_dequeue = time;
+		uint time = sta->prepare_summary();
+		last_dequeue = max(last_dequeue, time);
+
+		sta->summrize_sim(logs.common, endtime);
 	}
 
-	logs.common->writeline("\n\n============================================================");
-	logs.common->writeline("Time(s),Throughput(Mbps)");
+	/* print throughput data */
+	logs.common->writeline("\n================================= THOUGHPUT OVER TIME ===============================X");
+	logs.common->writeline("time(s),throughput(Mbps)");
 
-	for (auto dat : per_second_thru)
-	{
-		logs.common->writeline(num2str((int(dat.first / 1e6))) + "," + num2str(dat.second));
-	}
-
-	/* common log throughput data */
-	auto data = system_time > 1e6 ? total_data - prev(per_second_thru.end())->second : total_data;
-	auto size = system_time > 1e6 ? (per_second_thru.size() - 1) : per_second_thru.size();
 	logs.common->writeline("------------");
-	logs.common->writeline("average-persec," + num2str(data / size));
-	logs.common->writeline("average-fullsim," + num2str(total_data / (last_dequeue / 1e6)));
+	if (per_second_thru.size())
+	{
+		for (auto dat : per_second_thru)
+		{
+			logs.common->writeline(num2str((int(dat.first / 1e6))) + "," + num2str(dat.second));
+		}
+		auto data = system_time > 1e6 ? total_data - prev(per_second_thru.end())->second : total_data;
+		auto size = system_time > 1e6 ? (per_second_thru.size() - 1) : per_second_thru.size();
+		logs.common->writeline("average-persec," + num2str(data / size));
+		logs.common->writeline("average-fullsim," + num2str(total_data / (last_dequeue / 1e6)));
+	}
+
 	logs.common->writeline("total," + num2str(total_data));
 
-	logs.common->writeline("\n\n============================================================");
-	station_list.back()->ap_print("", logs.common);
+	station_list.back()->unbuffer_ap_stats(logs.common);
 }
 gcelltable Program::getgui()
 {
-	dout("========== Working on GUI now ==========");
+	dout("======================================== WORKING ON GUI NOW ==================================");
 	return guimap;
 }

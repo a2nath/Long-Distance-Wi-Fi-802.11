@@ -7,16 +7,23 @@
 #include <limits>
 #include <climits>
 #include <algorithm>
+#include <iomanip>
+#include <sstream>
 #include "Links.h"
 #include "Logger.h"
-#include <sstream>
 
+/* program will generate different seeds for rng */
 #define DETERMINISTIC
+
+/* show the visualization if API is available */
 //#define SHOWGUI
+
 #define SHOWOUT
 //#define REDUNDANT_RETRIES
 
+/* windows specific code  */
 #ifdef _WIN32
+
 #include <Windows.h>
 #define error_out( s )                                     \
 {                                                          \
@@ -95,20 +102,27 @@ enum enm {
 	contype = 2,
 	progdur = 3,
 	simdur = 4,
-	/* Size of data payload in bytes */
+	/* size of data payload in bytes */
 	datbytes = 5,
-	bwidth = 6,
-	dsegments = 7,
-	atout = 8,
-	antpower = 9,
-	stanames = 10,
-	debugend = 11,
-	pfactor = 12,
-	chwdow = 13,
-	seed = 14,
-	acwmax = 15,
-	acwmin = 16,
-	relim = 17
+	fquency = 6,
+	bwidth = 7,
+	dsegments = 8,
+	atout = 9,
+	antpower = 10,
+	stanames = 11,
+	debugend = 12,
+	/* distance scale at which to operate the wifi, 0 or > 1 means tradional wifi */
+	pfactor = 13,
+	/* backoff window length */
+	chwdow = 14,
+	/* random number seed */
+	seed = 15,
+	/* backoff window upper bound */
+	acwmax = 16,
+	/* backoff window lower bound */
+	acwmin = 17,
+	/* retry limit */
+	relim = 18
 };
 /*
 IDLE is for the GUI package.
@@ -173,21 +187,48 @@ struct Logs {
 	void done(string s = "")
 	{
 		auto name = common->getname();
-		for (auto &sta : stations) { sta->writeline("======= Sim ended at " + s + "ms ======="); delete sta; }
+		for (auto &sta : stations) { sta->writeline("\n\n\nOverall simulation duration " + s + " ms"); delete sta; }
 		for (auto p : { through,common }) delete p;
+#ifdef _WIN32
 		system(("notepad++.exe " + name).c_str());
+#else
+		cout << "Logs saved in directory " << system(string("dirname " + name + "").c_str()) << endl;
+#endif
 	}
 };
 extern Logs logs;
 
+/* return string with a requested precision for the input*/
+inline std::string double2str(double num, std::size_t const p) {
+	std::stringstream sstrm;
+	sstrm << std::setprecision(p) << std::fixed << num;
+
+	return sstrm.str();
+}
 
 /* Global helper functions */
+template<class T> std::string num2str(const T &input) { return std::to_string(input); }
+
 template<class T>
-std::string num2str(const T &input) { return std::to_string(input); }
+std::string num2str(const umap<uint, T>& input)
+{
+	string output = "";
+	for (auto m : input)
+		output += std::to_string(m.second) + ", ";
+	output.pop_back();
+	return output;
+}
+
 template<class T>
-std::string num2str(const umap<uint, T>& input) { string output = ""; for (auto m : input) output += std::to_string(m.second) + ", "; return output; }
-template<class T>
-std::string num2str(const vector<T>& input) { string output = ""; for (auto m : input) output += std::to_string(m) + ","; return output; }
+std::string num2str(const vector<T>& input)
+{
+	string output = "";
+	for (auto m : input)
+		output += std::to_string(m) + ",";
+	output.pop_back();
+	return output;
+}
+
 template<class T> T str2num(string &s)
 {
 	T x = 0;
@@ -195,6 +236,7 @@ template<class T> T str2num(string &s)
 	parser >> x;
 	return x;
 };
+
 int get_sinr2idx(float sinr);
 double get_per(mcs_index mcs, float sinr);
 double get_per(string mod_scheme, float sinr);

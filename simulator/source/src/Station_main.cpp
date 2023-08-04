@@ -4,6 +4,11 @@
 uint Station::id = 0;
 vector<string> ap_prints;
 
+vector<unordered_map<string, double>> per_station_summary;
+std::map<uint, uint> combined_qlat, combined_qsize;
+float ave_lat = 0, ave_size = 0, max_lat = 0, max_size = 0;
+
+
 Station::Station(const string name, const map<uint, map<uint, string>>& station_names,
 	const map<uint, map<uint, double>>& distance, const map<uint, map<uint, double>>& pathloss, gcellvector *guitable)
 	: uniqueID(Global::sta_name_map[name]), self_name(name), difs_finished(false), wait_for_timers(false), guiptr(guitable),
@@ -286,7 +291,10 @@ sptrRTS Station::genRTS(const uint current_time)
 	queue_update(casted_frame);
 	++rts_idx;
 	logger->writeline(num2str(current_time) + " qsize: " + num2str(txQueue()) + ", RTS add, seq" + num2str(seqNum));
+
 	queue_size[destination][current_time] = txQueue();
+	events_queued[destination].emplace_back(current_time);
+
 	return response_frame;
 }
 void Station::queue2buffer(uint current_time)
@@ -530,20 +538,22 @@ void Station::evaluate_channel(uint current_time, vector<vector<sptrFrame>>& wir
 	if (phy_indication->rx.start(true, current_time) && !rts_nav->inactive(current_time)) rts_nav_update(current_time);
 	if (rx_output.frame) decode_frame(current_time, rx_output.frame, wireless_channel[this->getID()]);
 }
-void Station::ap_print(string input, Logger* logger)
+void Station::buffer_ap_stats(string input)
 {
 	if (ap_mode)
 	{
-		if (!logger)
-		{
-			ap_prints.push_back(input);
-		}
-		else
-		{
-			for (auto s : ap_prints) logger->writeline(s);
-		}
+		ap_prints.push_back(input);
 	}
 }
+
+void Station::unbuffer_ap_stats(Logger* logger)
+{
+	if (ap_mode)
+	{
+		for (auto s : ap_prints) logger->writeline(s);
+	}
+}
+
 float Station::total_data_transferred()
 {
 	float data = 0;
@@ -551,106 +561,225 @@ float Station::total_data_transferred()
 		data += 8 * get_data_bytes(station) / (float)1e6;
 	return data;
 }
-void Station::summarize_results(Logger* common, uint &last_event)
+uint Station::prepare_summary()
 {
-	total_data = total_load = total_events_procc = total_events_dropped = levent = 0;
-	total_events_ququed = trafficgen != NULL ? actual_times->size() : 0;
-	for (auto station : dest_addresses)
+	/* keep track of the min and max to be used later */
+	total_data = total_load = total_events_procc = total_events_dropped = last_event = 0;
+	//total_events_queued = trafficgen != NULL ? actual_times->size() : 0;
+
+	per_station_summary.clear();
+	combined_qlat.clear();
+	combined_qsize.clear();
+
+	for (auto& station : dest_addresses)
 	{
 		auto data_transferred = 8 * get_data_bytes(station) / (float)1e6;
 		auto medium_load = trafficgen != NULL ? trafficgen->getLoad(station) : 0;
-		auto queued_procc = devent.find(station) != devent.end() ? devent.at(station).size() : 0;
-		auto queued_dropped = dropped_count.at(station);
 
-		logger->writeline(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-		logger->writeline("Destination station: " + num2str(station) + ", MCS: " + num2str(maclayer->mcs_map(station)));
-		logger->writeline("Total data (Mb): " + num2str(data_transferred));
-		logger->writeline("Medium load (Mb/s): " + num2str(medium_load));
+		auto queued_eventtime = events_queued[station].size();
+		auto queued_proccesed = devent[station].size();
+		auto queued_dropped = dropped_count[station];
 
-		if (queued_procc)
-		{
-			logger->writeline("Packets queued: " + num2str(total_events_ququed));
-			logger->writeline("Packets procesed: " + num2str(queued_procc));
-			logger->writeline("Packets dropped: " + num2str(queued_dropped));
-			logger->writeline(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-			logger->writeline("Event-time,Dequeue-time,Delta");
-			for (auto &e : devent.at(station))
-				logger->writeline(num2str(e.first / 1000.0) + "," + num2str(e.second / 1000.0) + "," + num2str((e.second - e.first) / 1000.0));
-			logger->writeline("============================================================");
-			logger->writeline(":: Queue Size Profiling Info ::");
-			for (auto &e : queue_size.at(station))
-				logger->writeline(num2str(e.first / 1000.0) + ',' + num2str(e.second));
-			logger->writeline("\n\n");
+		/* collect summary data to print at the end of the report */
+		per_station_summary.emplace_back(unordered_map<string, double>());
+		auto& summary = per_station_summary.back();
 
-		}
-		else logger->writeline("----------- All events droppped for this destination -----------");
+		summary["id"] = station;
+		summary["mcs"] = maclayer->mcs_map(station);
+		summary["data_transfered"] = data_transferred;
+		summary["medium_load"] = medium_load;
+		summary["total_events_ququed"] = queued_eventtime;
+		summary["queued_procc"] = queued_proccesed;
+		summary["queued_dropped"] = queued_dropped;
 
+		/* compute this data for overall summary below */
 		total_data += data_transferred;
 		total_load += medium_load;
-		total_events_procc += queued_procc;
+		total_events_ququed  += queued_eventtime;
+		total_events_procc   += queued_proccesed;
 		total_events_dropped += queued_dropped;
-		if (devent.find(station) != devent.end() && prev(devent[station].end())->second > levent)
-			levent = prev(devent[station].end())->second;
-	}
-	if (levent > last_event) last_event = levent;
-	overall_summary(logger);
-	overall_summary(common);
-	queue_status(common);
-}
-void Station::overall_summary(Logger *logger)
-{
-	if (logger != this->logger || (dest_addresses.size() > 1))
-	{
-		logger->writeline("========================= STATION " + num2str(uniqueID) + " ========================");
-		logger->writeline(":: SUMMARY FROM ALL STATIONS ::");
-		logger->writeline("Total data (Mb): " + num2str(total_data));
-		logger->writeline("Station load (Mb/s): " + num2str(total_load));
-		logger->writeline("Station throughput (Mb/s): " + num2str(total_data * 1e6 / levent));
-		logger->writeline("Packets queued: " + num2str(total_events_ququed));
-		logger->writeline("Packets transmitted: " + num2str(total_events_procc));
-		logger->writeline("Last transmitted: " + num2str(levent/1e3));
-		logger->writeline("Packets dropped: " + num2str(total_events_dropped));
-		logger->writeline("Seed: " + num2str(trafficgen != NULL ? trafficgen->getseed() : -1));
-		logger->write("MCS");
-		for (auto d : dest_addresses) logger->write(", " + num2str(d) + "-" + num2str(maclayer->mcs_map(d)));
-		logger->write("\n");
-	}
-}
-void Station::queue_status(Logger* logger)
-{
-	std::map<uint, uint> combined_qlat;
-	std::map<uint, uint> combined_qsize;
-	float ave_lat = 0, ave_size = 0, max_lat = 0, max_size = 0;
 
-	ap_print("AP [" + self_name + "]\nOverall Summary");
-	for (auto station : dest_addresses)
-	{
+		if (devent.find(station) != devent.end() && prev(devent[station].end())->second > last_event)
+			last_event = prev(devent[station].end())->second;
+
+		/* for overall printout about the network */
 		if (devent.find(station) != devent.end())
+		{
 			combined_qlat.insert(devent.at(station).begin(), devent.at(station).end());
+		}
 
+		/* for overall printout about the network */
 		if (queue_size.find(station) != queue_size.end())
+		{
 			combined_qsize.insert(queue_size.at(station).begin(), queue_size.at(station).end());
+		}
 	}
-	ap_print(":: Event-time,Dequeue-time,Delta ::");
+
+
+	/* buffer the contents to be displayed at the end of the program */
+	buffer_ap_stats("AP Overall Summary (name:" + self_name + ")");
+	buffer_ap_stats(":: Event-time,Dequeue-time,Delta ::");
 	for (auto m : combined_qlat)
 	{
 		auto num = (m.second - m.first) / 1000.0;
 		ave_lat += num;
 		if (num > max_lat) max_lat = num;
-		ap_print(num2str(m.first / 1000.0) + "," + num2str(m.second / 1000.0) + "," + num2str(num));
+		buffer_ap_stats(num2str(m.first / 1000.0) + "," + num2str(m.second / 1000.0) + "," + num2str(num));
 	}
-	ap_print("\n\n\n:: Queue Size Profiling Info ::");
+
+	buffer_ap_stats("\n\n\n:: Queue Size Profiling Info ::");
 	for (auto m : combined_qsize)
 	{
 		ave_size += m.second;
 		if (m.second > max_size) max_size = m.second;
-		ap_print(num2str(m.first / 1000.0) + ',' + num2str(m.second));
+		buffer_ap_stats(num2str(m.first / 1000.0) + ',' + num2str(m.second));
 	}
-	logger->writeline("-------------------------------------\nAverage latency," + num2str(ave_lat / combined_qlat.size()));
-	logger->writeline("Maximum latency," + num2str(max_lat));
-	logger->writeline("Average queue size," + num2str(ave_size / combined_qsize.size()));
-	logger->writeline("Maximum queue size," + num2str(max_size));
+
+	return last_event;
+}
+
+void Station::summrize_sim(Logger* common, float endtime)
+{
+	overall_summary(logger, endtime);
+
+	/* print out the packet latency history */
+	for (auto station : dest_addresses)
+	{
+		logger->change_file(station, ":: Packet Latency Profiling Info ::");
+
+		logger->writeline("Event-time(ms),Dequeue-time(ms),Delta(ms)");
+		if (devent.find(station) != devent.end())
+		{
+			for (auto& e : devent.at(station))
+			{
+				logger->writeline(num2str(e.first / 1000.0) + "," + num2str(e.second / 1000.0) + "," + num2str((e.second - e.first) / 1000.0));
+			}
+		}
+		else
+		{
+			logger->writeline("----------- there were no events to this station yet -------------------------------");
+		}
+	}
+
+	/*print out the queue size info */
+	for (auto station : dest_addresses)
+	{
+		logger->change_file(station, ":: Queue Size Profiling Info ::");
+
+		logger->writeline("Event-time(ms),Queue-size");
+		if (queue_size.find(station) != queue_size.end())
+		{
+			for (auto& e : queue_size.at(station))
+			{
+				logger->writeline(num2str(e.first / 1000.0) + ',' + num2str(e.second));
+			}
+		}
+		else
+		{
+			logger->writeline("----------- there were no events to this station yet -------------------------------");
+		}
+	}
+
+	logger->change_file(); // reset
+
+	/* write network summary */
+	overall_summary(common, endtime);
+	queue_status(common);
+}
+
+void Station::overall_summary(Logger *logger, float endtime)
+{
+	/* write this in the common logger and in the AP file */
+	if (logger != this->logger || ap_mode == true)
+	{
+		/* writ the global stats */
+		logger->writeline("===================================== STATION " + num2str(uniqueID) + " ====================================\n");
+		logger->writeline("Total data (Mb)                 :\t" + double2str(total_data, 2));
+		logger->writeline("Station load (Mb/s)             :\t" + double2str(total_load, 2));
+		logger->writeline("Station throughput (Mb/s)       :\t" + double2str(last_event == 0 ? 0 : total_data * 1e6 / last_event, 2));
+		logger->writeline("Packets queued                  :\t" + num2str(total_events_ququed));
+		logger->writeline("Packets transmitted             :\t" + num2str(total_events_procc));
+		logger->writeline("Last transmitted (ms)           :\t" + double2str(last_event / 1e3, 2));
+		logger->writeline("Simulation duration (ms)        :\t" + double2str(endtime, 2));
+		logger->writeline("Packets dropped                 :\t" + num2str(total_events_dropped));
+		logger->writeline("Data payload size (bytes)       :\t" + num2str(Global::data_pack_size));
+
+		logger->write(    "MCS Index (dest-id:mcs-number)  :");
+		for (auto d : dest_addresses) logger->write("\tstation" + num2str(d) + ":mcs" + num2str(maclayer->mcs_map(d)));
+		logger->write("\n");
+		logger->writeline("Seed                            :\t" + num2str(trafficgen != NULL ? trafficgen->getseed() : -1));
+		logger->write("\n");
+		logger->writeline("---------------------- per station summary shown below -----------------------------\n");
+
+		/* writ the per station stats */
+		logger->write(    "Destination station             :\t");
+		for (auto& station : per_station_summary)
+		{
+			logger->write(num2str((int)station["id"]) + "\t");
+		}
+		logger->write("\n");
+
+		logger->write(    "MCS Index                       :\t");
+		for (auto& station : per_station_summary)
+		{
+			logger->write(("[" + num2str((int)station["mcs"])) + "]\t");
+		}
+		logger->write("\n");
+
+		logger->write(    "Total data (Mb)                 :\t");
+		for (auto& station : per_station_summary)
+		{
+			logger->write(double2str(station["data_transfered"], 2) + "\t");
+		}
+		logger->write("\n");
+
+		logger->write(    "Medium load (Mb/s)              :\t");
+		for (auto& station : per_station_summary)
+		{
+			logger->write(double2str(station["medium_load"], 2) + "\t");
+		}
+		logger->write("\n");
+
+		logger->write(    "Packets queued                  :\t");
+		for (auto& station : per_station_summary)
+		{
+			logger->write(num2str((int)station["total_events_ququed"]) + "\t");
+		}
+		logger->write("\n");
+
+		vector<int> inactive;
+		logger->write(    "Packets procesed                :\t");
+		for (auto& station : per_station_summary)
+		{
+			logger->write(num2str((int)station["queued_procc"]) + "\t");
+			if (station["queued_procc"] == 0)
+				inactive.emplace_back(station["id"]);
+		}
+		logger->write("\n");
+
+		logger->write(    "Packets dropped                 :\t");
+		for (auto& station : per_station_summary)
+		{
+			logger->write(num2str((int)station["queued_dropped"]) + "\t");
+		}
+		logger->write("\n");
+
+		/* print out a warning for all the stations that did not receive packets */
+		for (auto& station : inactive)
+			logger->writeline("WARNING: All events droppped for this destination id " + num2str(station));
+	}
+}
+void Station::queue_status(Logger* logger)
+{
+	logger->writeline("Average latency                 :\t" + double2str(combined_qlat.empty() ? 0 : ave_lat / combined_qlat.size(), 2));
+	logger->writeline("Maximum latency                 :\t" + double2str(max_lat, 2));
+	logger->writeline("Average queue size              :\t" + double2str(combined_qsize.empty() ? 0 : ave_size / combined_qsize.size(), 2));
+	logger->writeline("Maximum queue size              :\t" + num2str((int)max_size));
+	logger->writeline("\n\n");
+
 #ifndef SHOWGUI
-	if (Global::DEBUG_END > 50000 && total_events_ququed != total_events_procc + total_events_dropped) error_out("NOT DONE YET. PACKETS LEFT IN THE QUEUE.");
+	if (Global::DEBUG_END > 50000
+		&& total_events_ququed != (total_events_procc + total_events_dropped))
+		error_out("NOT DONE YET. PACKETS LEFT IN THE QUEUE.");
 #endif
 }

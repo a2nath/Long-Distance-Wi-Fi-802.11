@@ -37,13 +37,14 @@ private:
 	/* profiling variables */
 	Logger *logger;
 	gcellvector *guiptr;
-	float total_data, total_load, levent;
+	float total_data, total_load, last_event;
 	umap<station_number, prop_del_us> rrt_map;
 	umap<station_number, std::map<uint, uint>> devent;
 	umap<station_number, std::map<uint, uint>> queue_size;
 	umap<station_number, uint> dropped_count;
 	typedef std::pair<retry_count, std::shared_ptr<Frame>> qpair;
 	uint total_events_ququed, total_events_procc, total_events_dropped;
+	unordered_map<uint, vector<uint>> events_queued;
 
 	std::unique_ptr<Timer> cts_int_timer, dat_int_timer, ack_int_timer, rts_nav, cts_nav, difs_wait;
 	std::unique_ptr<Backoff_Manager> backoff_timer;
@@ -218,10 +219,14 @@ public:
 	void resetPacketMode();
 
 	/* profiler functions */
-	void summarize_results(Logger * common, uint & last_event);
-	void overall_summary(Logger * logger);
+
+	/* gathers data from the network and station and returns the last event */
+	uint prepare_summary();
+	void summrize_sim(Logger* common, float endtime);
+	void overall_summary(Logger * logger, float endtime);
 	float total_data_transferred();
-	void ap_print(string input, Logger * logger = NULL);
+	void buffer_ap_stats(string input);
+	void unbuffer_ap_stats(Logger* logger);
 	void queue_status(Logger * logger);
 	bool active();
 };

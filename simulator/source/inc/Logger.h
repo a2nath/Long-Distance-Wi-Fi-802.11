@@ -5,30 +5,92 @@
 #include <vector>
 #include <queue>
 #include <ctime>
+#include <sys/types.h>
+#include <sys/stat.h>
+
+#ifdef _WIN32
+#include <direct.h>
+#define mkdir _mkdir
+#define chdir _chdir
+#else
+#define mkdir(path) mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
+#endif;
+
 using namespace std;
 
 class Logger
 {
 private:
-	string name;
-	ofstream outputfile;
-public:
-	Logger() {}
-	~Logger() { done(); }
-	Logger(string filenamepath) : name(filenamepath + ".txt")
+	string path;
+	string main_file;
+	string station_dir;
+	vector<ofstream> writers; // file-writers for various profiling info written to diff files
+	int writer_idx;
+
+	int isDir(string& dir)
 	{
-		outputfile.open(name);
+		struct stat info;
+
+		if (stat(dir.c_str(), &info) != 0)
+			return 0;
+		else if (info.st_mode & S_IFDIR)
+			return 1;
+		else
+			return -1;
+	}
+public:
+	Logger(string& _path, string _name) : path(_path), main_file(path + _name + ".txt")
+	{
+		writers.emplace_back(ofstream(main_file));
+		writer_idx = 0;
 	}
 
-	void printstatus(vector<string> &filecontents, string seeds, string retrylim, int idx)
+	Logger(int station_id, string& outputdir, string& station_name)
 	{
-		writeline("============================================================");
+		/* creat a new directory for station-specific data */
+		station_dir = outputdir + "station " + to_string(station_id) + "/";
+		mkdir(station_dir.c_str());
+
+		string name = "station_" + to_string(station_id);
+		path = station_dir + name + " [" + station_name + "]";
+		main_file = path + "_verbose.txt";
+
+		writers.emplace_back(ofstream(main_file));
+		writer_idx = 0; // main writer
+
+	}
+
+	~Logger() { done(); }
+
+	void change_file(uint station = 0, string state = "")
+	{
+		if (state.empty())
+		{
+			writer_idx = 0;
+			return;
+		}
+
+		if (state.compare(":: Packet Latency Profiling Info ::") == 0)
+		{
+			writers.emplace_back(ofstream(path + "_packet_latency_to_station_" + to_string(station) + ".txt"));
+			++writer_idx;
+		}
+		else if (state.compare(":: Queue Size Profiling Info ::") == 0)
+		{
+			writers.emplace_back(ofstream(path + "_queue_size_to_station_" + to_string(station) + ".txt"));
+			++writer_idx;
+		}
+	}
+
+	void print_input_file(vector<string> &filecontents, string seeds, string retrylim, int idx)
+	{
+		writeline("=================================== INPUT FILE =====================================");
 		for (int i = 0; i < filecontents.size()-1; ++i)
 		{
-			writeline(i == idx ? seeds.substr(0, seeds.length() - 1) : filecontents[i]);
+			writeline(i == idx ? seeds : filecontents[i]);
 		}
 		writeline("relimit," + retrylim);
-		writeline("============================================================");
+		writeline("====================================================================================");
 	}
 	template<class T>
 	void writeline(T d)
@@ -59,21 +121,20 @@ public:
 	template<class T>
 	void write(T d)
 	{
-		try {
-			if (!outputfile)
-				throw "get fucked";
-		}
-		catch (string s)
-		{
+		auto& writer = writers[writer_idx];
 
-		}
+		if (!writer)
+			throw runtime_error("File IO error");
 
-		outputfile << d;
+		writer << d;
 	}
 
 	std::string getname()
 	{
-		return name;
+		return main_file;
 	}
-	void done() { outputfile.close(); }
+	void done()
+	{
+		for (auto& writer : writers) writer.close();
+	}
 };
