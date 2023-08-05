@@ -27,8 +27,26 @@ void log_throughput(uint now, float &total, vector<sptrStation> &stations, map<u
 	total = total_data_this_sec;
 	thru[now] = total - data_per_sec;
 }
-Program::Program() : total_data(0)
+Program::Program(unordered_map<string, string>& arglist) : total_data(0)
 {
+	/* set the input parameters if set by the driving file */
+	if (arglist.find("input_dir") != arglist.end())
+		input_dir             = arglist.at("input_dir");
+	if (arglist.find("output_dir") != arglist.end())
+		output_dir            = arglist.at("output_dir");
+	if (arglist.find("per_rate_file") != arglist.end())
+		per_rate_file         = arglist.at("per_rate_file");
+	if (arglist.find("error_rate_file") != arglist.end())
+		error_rate_file       = arglist.at("error_rate_file");
+	if (arglist.find("mapping_file") != arglist.end())
+		in_mapping_file       = arglist.at("mapping_file");
+	if (arglist.find("distance_map") != arglist.end())
+		in_distance_map       = arglist.at("distance_map");
+	if (arglist.find("pathloss_map") != arglist.end())
+		in_pathloss_map       = arglist.at("pathloss_map");
+	if (arglist.find("simulation_params") != arglist.end())
+		in_simulation_params = arglist.at("simulation_params");
+
 	setup();
 	debugout("Progress [ ");
 	run();

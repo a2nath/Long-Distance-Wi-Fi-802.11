@@ -13,10 +13,10 @@
 #include "Logger.h"
 
 /* program will generate different seeds for rng */
-#define DETERMINISTIC
+/* use the compiler flag -D DETERMINISTIC */
 
 /* show the visualization if API is available */
-//#define SHOWGUI
+/* use the compiler flag -D SHOWGUI */
 
 #define SHOWOUT
 //#define REDUNDANT_RETRIES
@@ -42,33 +42,34 @@
 
 /* linux specific code */
 #else
+#include <unistd.h>
 
 #define error_out( s )                                    \
 {                                                         \
-    stringstream oss;                                     \
-    cerr.rdbuf( oss.rdbuf() );                            \
-    logs.done(" with error. Error " + oss.str());         \
-    throw;                                                \
+	stringstream oss;                                     \
+	cerr.rdbuf( oss.rdbuf() );                            \
+	logs.done(" with error. Error " + oss.str());         \
+	throw;                                                \
 }
 #define debugout( p )                                     \
 {                                                         \
-    stringstream oss;                                     \
-    streambuf* old = cerr.rdbuf( oss.rdbuf() );           \
-    cerr << " " << p;                                     \
-    cout << oss.str();                                    \
-    cerr.rdbuf( old );                                    \
+	stringstream oss;                                     \
+	streambuf* old = cerr.rdbuf( oss.rdbuf() );           \
+	cerr << " " << p;                                     \
+	cout << oss.str();                                    \
+	cerr.rdbuf( old );                                    \
 }
 
 #endif
 
-const std::string input_dir            = "inputs/";
-const std::string output_dir           = "results/";
-const std::string per_rate_file        = "lut_per_threshold_table.txt";
-const std::string error_rate_file      = "lut_error_rate_table.txt";
-const std::string in_mapping_file      = "splat_station_bindings.txt";
-const std::string in_distance_map      = "splat_distance_table.txt";
-const std::string in_pathloss_map      = "splat_pathloss_table.txt";
-const std::string in_simulation_params = "simulation_params.txt";
+extern std::string input_dir;
+extern std::string output_dir;
+extern std::string per_rate_file;
+extern std::string error_rate_file;
+extern std::string in_mapping_file;
+extern std::string in_distance_map;
+extern std::string in_pathloss_map;
+extern std::string in_simulation_params;
 
 namespace IO
 {
@@ -181,16 +182,21 @@ struct Global {
 };
 struct Logs {
 	vector<Logger*> stations;
-	Logger *through;
 	Logger *common;
 
 	void done(string s = "")
 	{
 		auto name = common->getname();
-		for (auto &sta : stations) { sta->writeline("\n\n\nOverall simulation duration " + s + " ms"); delete sta; }
-		for (auto p : { through,common }) delete p;
+		for (auto &sta : stations)
+		{
+			sta->writeline("\n\n\nOverall simulation duration " + s + " ms");
+			delete sta;
+		}
+
+		delete common;
+
 #ifdef _WIN32
-		system(("notepad++.exe " + name).c_str());
+		system(("C:\\Program Files\\Sublime Text\\sublime_text.exe " + name).c_str());
 #else
 		cout << "Logs saved in directory " << system(string("dirname " + name + "").c_str()) << endl;
 #endif

@@ -5,6 +5,15 @@
 
 using namespace std;
 
+std::string input_dir = "inputs/";
+std::string output_dir = "results/";
+std::string per_rate_file = "lut_per_threshold_table.txt";
+std::string error_rate_file = "lut_error_rate_table.txt";
+std::string in_mapping_file = "splat_station_bindings.txt";
+std::string in_distance_map = "splat_distance_table.txt";
+std::string in_pathloss_map = "splat_pathloss_table.txt";
+std::string in_simulation_params = "simulation_params.txt";
+
 umap<uint, std::string> Global::mcs_vs_modname = {
 	{ 0, "BPSK12" },
 	{ 1, "BPSK34" },

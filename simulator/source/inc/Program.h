@@ -28,7 +28,7 @@ private:
 	map<uint, float> per_second_thru;
 	float total_data;
 public:
-	Program();
+	Program(unordered_map<string, string>&);
 	~Program();
 	void done();
 	void setup();
