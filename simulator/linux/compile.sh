@@ -12,9 +12,10 @@ files="Common.cpp Frames.cpp GUI.cpp Program.cpp Station_main.cpp Station_timers
 macro=""
 macro=$macro" -D DETERMINISTIC"
 #macro=$macro" -D SHOWGUI"
+macro=$macro" -D SHOWOUT"
 #macro=$macro" -D REDUNDANT_RETRIES"
-#macro=$macro" -D GUISTART"
-#macro=$macro" -D GUIEND"
+#macro=$macro" -D GUISTART=0"
+#macro=$macro" -D GUIEND=1000"
 
 echo -n "Compiling "
 start=`date +%s`
