@@ -401,7 +401,11 @@ bool Station::virtual_cs_active(uint current_time)
 /* ----------------------  GUI ---------------------- */
 void Station::update_gui_timers(uint current_time)
 {
+
 #ifdef SHOWGUI
+	if (!(GUISTART <= current_time && current_time <= GUIEND)))
+		return;
+
 	auto timer_state = guiptr->at(current_time).getmode();
 	auto timerend = guiptr->at(current_time).gettimer();
 	if (!is_DIFS_expired(current_time) && difs_wait->running(current_time))

@@ -444,8 +444,9 @@ void Program::run()
 					otalist.add(frame->getSource(), now, frame->getDuration()); //frame is now in the air
 					if (!transmit_frame(now, frame)) return;
 #ifdef SHOWGUI
-					guimap[sta][now].add(new gui_frame_stat_tx{ frame->getSource(), frame->getDest(), frame->subval(),
-						frame->getSequence(), frame->getFrag() });
+					if (GUISTART <= now && now <= GUIEND)
+						guimap[sta][now].add(new gui_frame_stat_tx{ frame->getSource(),
+						frame->getDest(), frame->subval(),frame->getSequence(), frame->getFrag() });
 #endif
 				}
 				else // if (station.getAntennaMode() == TX)
@@ -465,8 +466,9 @@ void Program::run()
 					{
 						station.get_phy_indication().tx.start.b = false;
 #ifdef SHOWGUI
-						guimap[sta][now].add(new gui_frame_stat_tx{ frame->getSource(), frame->getDest(), frame->subval(),
-							frame->getSequence(), frame->getFrag() });
+						if (GUISTART <= now && now <= GUIEND)
+							guimap[sta][now].add(new gui_frame_stat_tx{ frame->getSource(),
+							frame->getDest(), frame->subval(),frame->getSequence(), frame->getFrag() });
 #endif
 					}
 				}
@@ -491,8 +493,9 @@ void Program::run()
 							otalist.add(frame->getSource(), now, frame->getDuration()); //frame is now in the air
 							if (!transmit_frame(now, frame)) return;
 #ifdef SHOWGUI
-							guimap[sta][now].add(new gui_frame_stat_tx{ frame->getSource(), frame->getDest(), frame->subval(),
-								frame->getSequence(), frame->getFrag() });
+							if (GUISTART <= now && now <= GUIEND)
+								guimap[sta][now].add(new gui_frame_stat_tx{ frame->getSource(),
+								frame->getDest(), frame->subval(),frame->getSequence(), frame->getFrag() });
 #endif
 						}
 						else
@@ -521,8 +524,9 @@ void Program::run()
 					{
 						station.get_phy_indication().tx.start.b = false;
 #ifdef SHOWGUI
-						guimap[sta][now].add(new gui_frame_stat_tx{ frame->getSource(), frame->getDest(), frame->subval(),
-							frame->getSequence(), frame->getFrag() });
+						if (GUISTART <= now && now <= GUIEND)
+							guimap[sta][now].add(new gui_frame_stat_tx{ frame->getSource(),
+							frame->getDest(), frame->subval(), frame->getSequence(), frame->getFrag() });
 #endif
 					}
 				}

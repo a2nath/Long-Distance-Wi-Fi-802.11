@@ -12,14 +12,18 @@
 #include "Links.h"
 #include "Logger.h"
 
-/* program will generate different seeds for rng */
-/* use the compiler flag -D DETERMINISTIC */
-
-/* show the visualization if API is available */
-/* use the compiler flag -D SHOWGUI */
-
-#define SHOWOUT
-//#define REDUNDANT_RETRIES
+/* possible macros that can be enabled from here or in the compile script
+*
+*
+#define DETERMINISTIC             // use the same seed between simulations for rng
+#define SHOWGUI                   // show the visualization if API is available
+#define SHOWOUT                   // more verbose output
+#define REDUNDANT_RETRIES         // retry more often
+#define GUISTART            0     // start time of the GUI render
+#define GUIEND              5000  // end time   of the GUI render
+*
+*
+---------------------------*/
 
 /* windows specific code  */
 #ifdef _WIN32

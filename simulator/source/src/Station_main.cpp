@@ -445,8 +445,9 @@ void Station::decode_frame(uint current_time, Frame* rx_frame, vector<sptrFrame>
 	{
 		tx_response(current_time, rx_frame, wireless_channel);
 #ifdef SHOWGUI
-		for (uint i = 0; i < rx_frame->getDuration(); ++i)
-			guiptr->at(current_time - i).receiver->discarded = false;
+		if (GUISTART <= current_time && current_time <= GUIEND)
+			for (uint i = 0; i < rx_frame->getDuration(); ++i)
+				guiptr->at(current_time - i).receiver->discarded = false;
 #endif
 	}
 	else
@@ -528,10 +529,13 @@ void Station::evaluate_channel(uint current_time, vector<vector<sptrFrame>>& wir
 		difs_unset();
 
 #ifdef SHOWGUI
-	for (auto ginfo : rx_output.guiinfo)
+	if (GUISTART <= current_time && current_time <= GUIEND)
 	{
-		guiptr->at(current_time).add(new gui_frame_stat_rx{ ginfo.source, ginfo.destination,
-			ginfo.type,ginfo.sequence, ginfo.frag });
+		for (auto ginfo : rx_output.guiinfo)
+		{
+			guiptr->at(current_time).add(new gui_frame_stat_rx{ ginfo.source,
+			 ginfo.destination, ginfo.type, ginfo.sequence, ginfo.frag });
+		}
 	}
 #endif
 
