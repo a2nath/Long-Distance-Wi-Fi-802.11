@@ -134,14 +134,14 @@ void Program::setup()
 
 	Global::traffic_type = output[conns][0] == "udp" ? 0 : 1;
 	Global::DEBUG_END = str2double(output[debugend][0]) * 1000;
-	ENDIT = Global::DEBUG_END;
+	debug_endtime = Global::DEBUG_END;
 
 	for (auto& s : output[antpower])
 		Global::txpowers.emplace_back(str2double(s));
 
 	Global::data_pack_size = str2double(output[datbytes][0]);
 	Global::produration = str2double(output[progdur][0]) * 1000; // in microseconds
-	Global::simduration = str2double(output[simdur][0]) * 1000; // in microseconds
+	Global::simduration = str2double(output[simdur][0]) * 1000;  // in microseconds
 	Global::data_fragments = str2double(output[dsegments][0]);
 	Global::frequency = str2double(output[fquency][0]);
 	Global::bandwidth = str2double(output[bwidth][0]);
@@ -403,7 +403,7 @@ bool Program::transmit_frame(uint current_time, std::shared_ptr<Frame> &frame)
 }
 void Program::run()
 {
-	end_time = (ENDIT > 50000 ? Global::produration : ENDIT) + 1;
+	end_time = (debug_endtime > 50000 ? Global::produration : debug_endtime) + 1;
 	system_time = 0;
 
 	/* simulator starts here */

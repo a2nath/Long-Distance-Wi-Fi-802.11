@@ -23,7 +23,8 @@ private:
 	umap<uint, umap<uint, uint>> proptable;
 	vector<vector<sptrFrame>> channel;
 	uint system_time;
-	uint ENDIT;
+	/* if you need to end the program before simulation time */
+	uint debug_endtime;
 
 	map<uint, float> per_second_thru;
 	float total_data;
