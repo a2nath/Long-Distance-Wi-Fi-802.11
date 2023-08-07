@@ -88,9 +88,9 @@ uint Station::get_data_count(station_number station)
 {
 	return devent.find(station) != devent.end() ? devent.at(station).size() : 0;
 }
-float Station::get_data_bytes(int station)
+float Station::get_data_bytes(uint station)
 {
-	return station > -1 ? (get_data_count(station) * (trafficgen != NULL ? trafficgen->payload_size(station) : 0)) : total_data;
+	return get_data_count(station) * (trafficgen != NULL ? trafficgen->payload_size(station) : 0);
 }
 Station::~Station()
 {

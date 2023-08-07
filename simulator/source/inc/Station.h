@@ -87,7 +87,7 @@ private:
 			buffer.erase(buffer.begin()); // this is always true - beginning has to be earliest frame
 		}
 		void discard() { delivered(); }
-		int operator()() { return buffer.size(); }
+		size_t size() { return buffer.size(); }
 		uint retries() { return getpair()->first; }
 		void retry(int recount) { getpair()->first += recount; }
 		qpair* get(uint i)
@@ -179,7 +179,7 @@ public:
 	~Station();
 
 	uint getID();
-	float get_data_bytes(int station = -1);
+	float get_data_bytes(uint station);
 	std::shared_ptr<Frame> lookup_buffer(uint current_time, Frame * frame);
 	MacLayer * getMacLayer();
 	PhyAdapter * getPhyLayer();
