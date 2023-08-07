@@ -247,7 +247,7 @@ namespace IO
 		{
 			out.emplace_back(line);
 
-			if (out.back()[0] == '\n' || out.back()[0] == '\r\n') // linux/windows empty line
+			if (out.back()[0] == '#' || out.back()[0] == '\n' || out.back()[0] == '\r\n') // linux/windows empty line
 				out.erase(out.end() - 1);
 		}
 #ifndef _WIN32

@@ -201,7 +201,7 @@ struct Logs {
 		delete common;
 
 #ifdef _WIN32
-		system(("C:\\Program Files\\Sublime Text\\sublime_text.exe " + name).c_str());
+		system(("C:\\Program\ Files\\Sublime\ Text\\sublime_text.exe " + name).c_str());
 #else
 		cout << "Logs saved in directory " << system(string("dirname " + name + "").c_str()) << endl;
 #endif
