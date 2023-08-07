@@ -18,6 +18,10 @@ private:
 	umap<station_number, prop_del_us> propagationMap;
 
 public:
+	static bool isLongDistance()
+	{
+		return 0.0 < Global::prop_factor && Global::prop_factor <= 1.0;
+	}
 	WirelessChannel(const string name, umap<float, float>& antenna_prop, const map<uint, map<uint, string>>& station_names,
 		const map<uint, map<uint, double>>& distance, const map<uint, map<uint, double>>& pathloss) : self_id(Global::sta_name_map[name])
 	{
@@ -35,7 +39,7 @@ public:
 			double gain2 = Global::sta_name_map[Global::ap_station] == sta ? G_ap : G_cl;
 			distanceMap[sta] = distance.at(self_id).at(sta) * 1e3;
 
-			if (0 < propfactor && propfactor <= 1) //0 - 100% distance scale
+			if (isLongDistance()) //0 - 100% distance scale
 			{
 				propagationMap[sta] = round(propfactor * s2micro((double)(distanceMap.at(sta) / lightspeed)));
 			}
