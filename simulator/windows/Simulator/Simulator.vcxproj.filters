@@ -99,9 +99,6 @@
     <ClInclude Include="..\..\source\inc\common.h">
       <Filter>Header Files\ADMIN</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\inc\Event.h">
-      <Filter>Header Files\ADMIN</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\src\Station_timers.cpp">

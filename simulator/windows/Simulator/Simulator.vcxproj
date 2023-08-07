@@ -144,7 +144,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\source\inc\Antenna.h" />
     <ClInclude Include="..\..\source\inc\common.h" />
-    <ClInclude Include="..\..\source\inc\Event.h" />
     <ClInclude Include="..\..\source\inc\Field.h" />
     <ClInclude Include="..\..\source\inc\FrameBox.h" />
     <ClInclude Include="..\..\source\inc\Frames.h" />
