@@ -16,6 +16,8 @@
 #define mkdir(path) mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
 #endif;
 
+inline int create_dir(std::string);
+
 using namespace std;
 
 class Logger
@@ -49,7 +51,7 @@ public:
 	{
 		/* creat a new directory for station-specific data */
 		station_dir = outputdir + "station " + to_string(station_id) + "/";
-		mkdir(station_dir.c_str());
+		create_dir(station_dir);
 
 		string name = "station_" + to_string(station_id);
 		path = station_dir + name + " [" + station_name + "]";

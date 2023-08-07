@@ -249,10 +249,12 @@ void Program::setup()
 #endif
 	}
 
-	mkdir(output_dir.c_str());
-	path = output_dir + create_tstamp() + (Global::prop_factor > 1.0 ? "" : ("-L-" + num2str(Global::aCWmax)
-		+ "-" + num2str(Global::aCWmin) )) + "/";
-	mkdir(path.c_str());
+	create_dir(output_dir);
+
+	path = output_dir + create_tstamp() + (WirelessChannel::isLongDistance() ? ("-L-" + num2str(Global::aCWmax)
+		+ "-" + num2str(Global::aCWmin) ) : "" ) + "/";
+
+	create_dir(path);
 
 	/* initialize the gui_map */
 	gcellvector init(Global::produration);
@@ -326,7 +328,7 @@ void Program::update_end_time(int now)
 	{
 		if (station->active())
 		{
-			if ((long int)Global::produration - (long int)now < 1e6)
+			if ((int)Global::produration - now < 1e6)
 			{
 				Global::produration += 1e6;
 				end_time = Global::produration + 1;
@@ -346,7 +348,7 @@ void Program::update_end_time(int now)
 }
 void Program::print_progress(int now)
 {
-	if (now % 1000000 == 0)
+	if (now % 1000000 == 0) // every second
 	{
 		log_throughput(now, total_data, station_list, per_second_thru);
 		update_end_time(now);
@@ -402,12 +404,14 @@ bool Program::transmit_frame(uint current_time, std::shared_ptr<Frame> &frame)
 void Program::run()
 {
 	end_time = (ENDIT > 50000 ? Global::produration : ENDIT) + 1;
+	system_time = 0;
 
 	/* simulator starts here */
-	system_time = 0;
 	for (uint &now = system_time; now < Global::produration; ++now)
 	{
-		if (now) print_progress(now);
+		if (now)
+			print_progress(now);
+
 		if (now == end_time)
 			break;
 

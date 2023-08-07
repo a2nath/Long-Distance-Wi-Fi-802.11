@@ -47,7 +47,7 @@
 /* linux specific code */
 #else
 #include <unistd.h>
-
+#include <string.h>
 #define error_out( s )                                    \
 {                                                         \
 	stringstream oss;                                     \
@@ -65,6 +65,7 @@
 }
 
 #endif
+
 
 extern std::string input_dir;
 extern std::string output_dir;
@@ -247,6 +248,18 @@ template<class T> T str2num(string &s)
 	return x;
 };
 
+inline int create_dir(std::string path)
+{
+	auto ret = mkdir(path.c_str());
+	if (ret == -1)
+	{
+		if (errno != EEXIST)
+		{
+			throw std::runtime_error("Cannot create a new directory " + path + ". " + strerror(errno));
+		}
+	}
+	return 0;
+}
 int get_sinr2idx(float sinr);
 double get_per(mcs_index mcs, float sinr);
 double get_per(string mod_scheme, float sinr);
