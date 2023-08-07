@@ -239,7 +239,7 @@ void Station::difs_reset(uint current_time, flag setstate)
 }
 void Station::difs_start(uint current_time)
 {
-	if (!txQueue() || !backoff_timer->inactive(current_time)) return;
+	if (!txQueue.size() || !backoff_timer->inactive(current_time)) return;
 	for (auto &timer : { rts_nav.get(), cts_nav.get(), cts_int_timer.get(), dat_int_timer.get(), ack_int_timer.get(), difs_wait.get() })
 	{
 		if (!timer->inactive(current_time)) return;

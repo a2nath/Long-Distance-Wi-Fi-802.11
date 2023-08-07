@@ -52,7 +52,7 @@ void Station::queue_update(std::shared_ptr<Frame> &response)
 
 	if (phy_indication->rx.start.time <= response->getTime()
 		|| phy_indication->tx.start.time <= response->getTime()
-		|| txQueue() || !station_idle() || wait_for_timers)
+		|| txQueue.size() || !station_idle() || wait_for_timers)
 		--retry_first_attempt_failed;
 
 	txQueue.add(dot11ShortRetryLimit + retry_first_attempt_failed, response);
@@ -153,7 +153,7 @@ void Station::setRX(uint now_time)
 }
 int Station::txqueue_seq()
 {
-	return txQueue() ? txQueue.getpair()->second->getSequence() : -1;
+	return txQueue.size() ? txQueue.getpair()->second->getSequence() : -1;
 }
 bool Station::cts_accept(uint sequence)
 {
@@ -290,9 +290,9 @@ sptrRTS Station::genRTS(const uint current_time)
 	auto casted_frame = shared_ptr<Frame>(response_frame);
 	queue_update(casted_frame);
 	++rts_idx;
-	logger->writeline(num2str(current_time) + " qsize: " + num2str(txQueue()) + ", RTS add, seq" + num2str(seqNum));
+	logger->writeline(num2str(current_time) + " qsize: " + num2str(txQueue.size()) + ", RTS add, seq" + num2str(seqNum));
 
-	queue_size[destination][current_time] = txQueue();
+	queue_size[destination][current_time] = txQueue.size();
 	events_queued[destination].emplace_back(current_time);
 
 	return response_frame;
@@ -301,7 +301,7 @@ void Station::queue2buffer(uint current_time)
 {
 	genRTS(current_time);
 
-	if (txBuffer.buf.second == NULL && txQueue())
+	if (txBuffer.buf.second == NULL && txQueue.size())
 	{
 		auto queue_response = txQueue.get(current_time);
 		if (queue_response->second != NULL)
@@ -319,7 +319,7 @@ std::shared_ptr<Frame> Station::tx_dequeue(uint current_time)
 	if (frame)
 	{
 		retry_offset(-1);
-		logger->writeline(num2str(current_time) + " qsize: " + num2str(txQueue())
+		logger->writeline(num2str(current_time) + " qsize: " + num2str(txQueue.size())
 			+ " queue-time " + num2str(actual_times->at(txBuffer.seqn())) + " at RTS release(" + num2str(frame->getDest()) + "), seq"
 			+ num2str(txBuffer.seqn()) + (txBuffer.abs_re() == dot11ShortRetryLimit ? ", try " : ", retry ") + num2str(txBuffer.abs_re()));
 		return frame;
@@ -423,10 +423,10 @@ void Station::tx_response(uint current_time, Frame *received_frame, vector<sptrF
 		{
 			if (txBuffer.abs_re() < 0) error_out("buffer empty or forgot to drop the frame");
 			txQueue.delivered();
-			logger->writeline(num2str(current_time) + " qsize: " + num2str(txQueue()) + " at DATA del seq" + num2str(txBuffer.seqn()));
+			logger->writeline(num2str(current_time) + " qsize: " + num2str(txQueue.size()) + " at DATA del seq" + num2str(txBuffer.seqn()));
 			txBuffer.delivered();
 		}
-		queue_size[source][current_time] = txQueue();
+		queue_size[source][current_time] = txQueue.size();
 		resetPacketMode();
 	}
 }
@@ -503,14 +503,14 @@ bool Station::sifs()
 }
 bool Station::active()
 {
-	return get_next_rts_time() != UINT_MAX || txQueue();
+	return get_next_rts_time() != UINT_MAX || txQueue.size();
 }
 bool Station::frame_drop_check(uint &current_time)
 {
 	auto retries = txBuffer.abs_re();
 	if (!retries)
 	{
-		logger->writeline(num2str(current_time) + " qsize: " + num2str(txQueue()) + " at deq, frame dropped" + ", seq" + num2str(txBuffer.seqn()));
+		logger->writeline(num2str(current_time) + " qsize: " + num2str(txQueue.size()) + " at deq, frame dropped" + ", seq" + num2str(txBuffer.seqn()));
 		dropped_latch = { true, txBuffer.seqn() };
 		++dropped_count.at(txBuffer.getdest());
 		txBuffer.discard();
