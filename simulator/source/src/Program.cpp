@@ -539,9 +539,11 @@ void Program::summary()
 {
 	float endtime = end_time / (float)1000.0;
 	logs.common->writeline("Overall simulation duration (ms)   :\t" + double2str(endtime, 2));
-	logs.common->writeline("Last wireless channel utilization  :\tstation" + num2str(otalist.last().source) + ", " + num2str(otalist.last().reltime / 1000.0) + " ms");
+	logs.common->writeline("Last wireless channel utilization  :\tstation" + num2str(otalist.last().source) + ", " + double2str(otalist.last().reltime / 1000.0, 3) + " ms");
 
 	uint last_dequeue = 0;
+	uint program_duration = Global::simduration;
+
 	/* log station summary */
 	for (auto &sta : station_list)
 	{
@@ -550,26 +552,35 @@ void Program::summary()
 		last_dequeue = max(last_dequeue, time);
 
 		sta->summrize_sim(logs.common, endtime);
+
+		if (end_time == program_duration && sta->active())
+		{
+			dout("ERROR: NOT DONE YET. PACKETS LEFT IN THE QUEUE IN STATION " + num2str(sta->getID()) + ".", false);
+		}
 	}
 
-	/* print throughput data */
-	logs.common->writeline("\n================================= THOUGHPUT OVER TIME ===============================X");
-	logs.common->writeline("time(s),throughput(Mbps)");
-
-	logs.common->writeline("------------");
 	if (per_second_thru.size())
 	{
+		/* print throughput data */
+		logs.common->writeline("\n================================ THROUGHPUT OVER TIME ===============================");
+		logs.common->writeline("time(s),throughput(Mbps)");
+
 		for (auto dat : per_second_thru)
 		{
 			logs.common->writeline(num2str((int(dat.first / 1e6))) + "," + num2str(dat.second));
 		}
-		auto data = system_time > 1e6 ? total_data - prev(per_second_thru.end())->second : total_data;
+
+		auto data = system_time > 1e6 ? total_data - per_second_thru.rbegin()->second : total_data;
 		auto size = system_time > 1e6 ? (per_second_thru.size() - 1) : per_second_thru.size();
 		logs.common->writeline("average-persec," + num2str(data / size));
 		logs.common->writeline("average-fullsim," + num2str(total_data / (last_dequeue / 1e6)));
 	}
+	else
+		logs.common->writeline("No throughput data available at this time");
 
 	logs.common->writeline("total," + num2str(total_data));
+	logs.common->writeline("-------------------------------------------------------------------------------------");
+	logs.common->writeline("\n");
 
 	station_list.back()->unbuffer_ap_stats(logs.common);
 }

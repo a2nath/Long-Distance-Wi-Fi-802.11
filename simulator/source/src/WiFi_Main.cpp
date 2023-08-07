@@ -15,8 +15,8 @@ int main(int argc, char *argv[])
 	}
 
 	Program program(arglist);
-	auto gui_helper = program.getgui();
 #ifdef SHOWGUI
+	auto gui_helper = program.getgui();
 	QApplication GUI_Application(argc, argv);
 	Window window(gui_helper);
 	return GUI_Application.exec();

@@ -200,6 +200,8 @@ uivector nextslottime_us(const uivector &times)
 	}
 	return return_vect;
 }
+
+/* this function takes a string and passes it to the macro */
 void dout(string message, bool throw_error)
 {
 #ifdef SHOWOUT
@@ -207,13 +209,12 @@ void dout(string message, bool throw_error)
 	{
 		debugout(string(message + "\n").c_str());
 	}
-	else
+#endif
+	if (throw_error == true)
 	{
 		error_out(string(message + "\n").c_str());
 	}
-#else
-	if (throw_error) error_out(string(message + "\n").c_str());
-#endif
+
 }
 
 

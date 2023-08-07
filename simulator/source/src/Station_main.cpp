@@ -603,8 +603,9 @@ uint Station::prepare_summary()
 		total_events_procc   += queued_proccesed;
 		total_events_dropped += queued_dropped;
 
-		if (devent.find(station) != devent.end() && prev(devent[station].end())->second > last_event)
-			last_event = prev(devent[station].end())->second;
+		/* set the last event time */
+		if (devent[station].size())
+			last_event = max((uint)last_event, devent[station].rbegin()->second);
 
 		/* for overall printout about the network */
 		if (devent.find(station) != devent.end())
@@ -621,8 +622,14 @@ uint Station::prepare_summary()
 
 
 	/* buffer the contents to be displayed at the end of the program */
-	buffer_ap_stats("AP Overall Summary (name:" + self_name + ")");
-	buffer_ap_stats(":: Event-time,Dequeue-time,Delta ::");
+	buffer_ap_stats("AP Overall Summary (named: " + self_name + ")");
+	buffer_ap_stats("Events queued and then dequeued (success) : " + num2str(combined_qlat.size()));
+	buffer_ap_stats("Queue size change logged count            : " + num2str(combined_qsize.size()));
+	buffer_ap_stats("\n");
+	buffer_ap_stats("-------------------------------------------------------------------------------------");
+	buffer_ap_stats("\n");
+	buffer_ap_stats("Event-time(ms),Dequeue-time(ms),Delta(ms)");
+
 	for (auto m : combined_qlat)
 	{
 		auto num = (m.second - m.first) / 1000.0;
@@ -631,7 +638,11 @@ uint Station::prepare_summary()
 		buffer_ap_stats(num2str(m.first / 1000.0) + "," + num2str(m.second / 1000.0) + "," + num2str(num));
 	}
 
-	buffer_ap_stats("\n\n\n:: Queue Size Profiling Info ::");
+	buffer_ap_stats("\n");
+	buffer_ap_stats("-------------------------------------------------------------------------------------");
+	buffer_ap_stats("\n");
+	buffer_ap_stats("Event-time(ms),Queue-size");
+
 	for (auto m : combined_qsize)
 	{
 		ave_size += m.second;
@@ -691,60 +702,70 @@ void Station::summrize_sim(Logger* common, float endtime)
 	queue_status(common);
 }
 
-void Station::overall_summary(Logger *logger, float endtime)
+void Station::overall_summary(Logger* logger, float endtime)
 {
-	/* write this in the common logger and in the AP file */
-	if (logger != this->logger || ap_mode == true)
-	{
-		/* writ the global stats */
-		logger->writeline("===================================== STATION " + num2str(uniqueID) + " ====================================\n");
-		logger->writeline("Total data (Mb)                 :\t" + double2str(total_data, 2));
-		logger->writeline("Station load (Mb/s)             :\t" + double2str(total_load, 2));
-		logger->writeline("Station throughput (Mb/s)       :\t" + double2str(last_event == 0 ? 0 : total_data * 1e6 / last_event, 2));
-		logger->writeline("Packets queued                  :\t" + num2str(total_events_ququed));
-		logger->writeline("Packets transmitted             :\t" + num2str(total_events_procc));
-		logger->writeline("Last transmitted (ms)           :\t" + double2str(last_event / 1e3, 2));
-		logger->writeline("Simulation duration (ms)        :\t" + double2str(endtime, 2));
-		logger->writeline("Packets dropped                 :\t" + num2str(total_events_dropped));
-		logger->writeline("Data payload size (bytes)       :\t" + num2str(Global::data_pack_size));
+	/* write the global stats */
+	logger->writeline("===================================== STATION " + num2str(uniqueID) + " ====================================\n");
+	logger->writeline("Total data (Mb)                 :\t" + double2str(total_data, 2));
+	logger->writeline("Station load (Mb/s)             :\t" + double2str(total_load, 2));
+	logger->writeline("Station throughput (Mb/s)       :\t" + double2str(last_event == 0 ? 0 : total_data * 1e6 / last_event, 2));
+	logger->writeline("Packets queued                  :\t" + num2str(total_events_ququed));
+	logger->writeline("Packets processed               :\t" + num2str(total_events_procc));
+	logger->writeline("Packets dropped                 :\t" + num2str(total_events_dropped));
+	logger->writeline("Last transmitted (ms)           :\t" + double2str(last_event / 1e3, 2));
+	logger->writeline("Simulation duration (ms)        :\t" + double2str(endtime, 2));
+	logger->writeline("Data payload size (bytes)       :\t" + num2str(Global::data_pack_size));
 
-		logger->write(    "MCS Index (dest-id:mcs-number)  :");
-		for (auto d : dest_addresses) logger->write("\tstation" + num2str(d) + ":mcs" + num2str(maclayer->mcs_map(d)));
-		logger->write("\n");
-		logger->writeline("Seed                            :\t" + num2str(trafficgen != NULL ? trafficgen->getseed() : -1));
+	logger->write("MCS Index (dest-id:mcs-number)  :");
+
+	for (auto d : dest_addresses)
+	{
+		logger->write("\tstation" + num2str(d) + ":mcs" + num2str(maclayer->mcs_map(d)));
+	}
+
+	logger->write("\n");
+	logger->writeline("Seed                            :\t" + num2str(trafficgen != NULL ? trafficgen->getseed() : -1));
+
+	if (total_events_procc == 0)
+	{
+		logger->writeline("WARNING: All packets dropped while trying to send to destination");
+	}
+
+	if (ap_mode == true)
+	{
 		logger->write("\n");
 		logger->writeline("---------------------- per station summary shown below -----------------------------\n");
 
 		/* writ the per station stats */
-		logger->write(    "Destination station             :\t");
+		logger->write("Destination station             :\t");
 		for (auto& station : per_station_summary)
 		{
 			logger->write(num2str((int)station["id"]) + "\t");
 		}
 		logger->write("\n");
 
-		logger->write(    "MCS Index                       :\t");
+		logger->write("MCS Index                       :\t");
 		for (auto& station : per_station_summary)
 		{
 			logger->write(("[" + num2str((int)station["mcs"])) + "]\t");
 		}
 		logger->write("\n");
 
-		logger->write(    "Total data (Mb)                 :\t");
+		logger->write("Total data (Mb)                 :\t");
 		for (auto& station : per_station_summary)
 		{
 			logger->write(double2str(station["data_transfered"], 2) + "\t");
 		}
 		logger->write("\n");
 
-		logger->write(    "Medium load (Mb/s)              :\t");
+		logger->write("Station load (Mb/s)             :\t");
 		for (auto& station : per_station_summary)
 		{
 			logger->write(double2str(station["medium_load"], 2) + "\t");
 		}
 		logger->write("\n");
 
-		logger->write(    "Packets queued                  :\t");
+		logger->write("Packets queued                  :\t");
 		for (auto& station : per_station_summary)
 		{
 			logger->write(num2str((int)station["total_events_ququed"]) + "\t");
@@ -752,7 +773,7 @@ void Station::overall_summary(Logger *logger, float endtime)
 		logger->write("\n");
 
 		vector<int> inactive;
-		logger->write(    "Packets procesed                :\t");
+		logger->write("Packets processed                :\t");
 		for (auto& station : per_station_summary)
 		{
 			logger->write(num2str((int)station["queued_procc"]) + "\t");
@@ -761,7 +782,7 @@ void Station::overall_summary(Logger *logger, float endtime)
 		}
 		logger->write("\n");
 
-		logger->write(    "Packets dropped                 :\t");
+		logger->write("Packets dropped                 :\t");
 		for (auto& station : per_station_summary)
 		{
 			logger->write(num2str((int)station["queued_dropped"]) + "\t");
@@ -773,17 +794,18 @@ void Station::overall_summary(Logger *logger, float endtime)
 			logger->writeline("WARNING: All events droppped for this destination id " + num2str(station));
 	}
 }
+
 void Station::queue_status(Logger* logger)
 {
-	logger->writeline("Average latency                 :\t" + double2str(combined_qlat.empty() ? 0 : ave_lat / combined_qlat.size(), 2));
-	logger->writeline("Maximum latency                 :\t" + double2str(max_lat, 2));
+	logger->writeline("Average latency (ms)            :\t" + double2str(combined_qlat.empty() ? 0 : ave_lat / combined_qlat.size(), 2));
+	logger->writeline("Maximum latency (ms)            :\t" + double2str(max_lat, 2));
 	logger->writeline("Average queue size              :\t" + double2str(combined_qsize.empty() ? 0 : ave_size / combined_qsize.size(), 2));
 	logger->writeline("Maximum queue size              :\t" + num2str((int)max_size));
 	logger->writeline("\n\n");
 
-#ifndef SHOWGUI
-	if (Global::DEBUG_END > 50000
-		&& total_events_ququed != (total_events_procc + total_events_dropped))
-		error_out("NOT DONE YET. PACKETS LEFT IN THE QUEUE.");
-#endif
+//#ifndef SHOWGUI
+//	if (Global::DEBUG_END > 50000
+//		&& total_events_ququed != (total_events_procc + total_events_dropped))
+//		error_out("NOT DONE YET. PACKETS LEFT IN THE QUEUE.");
+//#endif
 }
