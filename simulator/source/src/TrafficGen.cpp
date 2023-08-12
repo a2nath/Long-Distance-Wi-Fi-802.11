@@ -8,11 +8,14 @@ TrafficGenerator::TrafficGenerator(uint phyid, uivector &dests, McsManager *mcs_
 	auto logger = logs.stations[phyid];
 	float slots_per_s = 1e6 / (double)dot11a_slot_time;
 
+	bool is_ap = dests.size() > 1 ? true : false; // AP specific
+
 	auto traffic_loads = mltimap2vector(Global::traffic_load, phyid);
+	uint count = 0;
 
 	for (int i = 0; i < traffic_loads.size(); ++i)
 	{
-		medium_load[dests[i]] = !mcs_mapping->at(dests[i]).dead ? traffic_loads[i] : 0;
+		medium_load[dests[i]] = mcs_mapping->at(dests[i]).dead == false ? traffic_loads[i] : 0;
 	}
 
 	slot_count = floor(Global::simduration / (double)dot11a_slot_time);
@@ -23,17 +26,28 @@ TrafficGenerator::TrafficGenerator(uint phyid, uivector &dests, McsManager *mcs_
 		bytes_per_packet[station] = Global::data_pack_size;
 		float packets_per_s = (1e6 * medium_load.at(station)) / (double)(8 * bytes_per_packet.at(station));
 		busyf[station] = packets_per_s / slots_per_s;
-		if (busyf.at(station) > 1.0) dout("Busy fraction is more than 100%; sta " + num2str(phyid), true);
+
+		if (busyf.at(station) > 1.0)
+		{
+			dout("TrafficGen: Invalid parameters. Busy ratio is more than 100%; sta " + num2str(phyid), true);
+		}
 
 		payload_event_mapping[station] = generate_payload_events(station);
-		logger->writeline("Payload queue to Station " + num2str(station) + " | busy: " + num2str(busyf.at(station) * 100) + "%");
-		if (busyf.at(station) == 0) logger->writeline("No traffic scheduled for this station [medium_load = " + num2str(medium_load) + "]");
+
+		logger->writeline("                    payload queue to station " + num2str(station)
+			+ ", busy: " + num2str(busyf.at(station) * 100) + "%");
+
+		if (busyf.at(station) == 0)
+		{
+			logger->writeline("                    no traffic scheduled for this station [medium_load = "
+				+ num2str(medium_load) + "]");
+		}
 	}
 
-	if (dests.size() > 1)
+	if (is_ap)
 	{
 		std::uniform_int_distribution<int> destinations(0, dests.size() - 1);
-		int mx(0), count(0);
+		int mx(0);
 
 		for (auto& m : payload_event_mapping)
 		{
@@ -88,12 +102,23 @@ TrafficGenerator::TrafficGenerator(uint phyid, uivector &dests, McsManager *mcs_
 		payload_events = payload_event_mapping.at(dests[0]);
 	}
 	dest_pointer = destination_address_distr.size() > 0 ? &destination_address_distr[0] : NULL;
-	logger->writeline("Seed: " + num2str(seed));
-	logger->writefor(payload_events, 10);
-	logger->writefor(destination_address_distr, 10);
+	logger->writeline("-------------------------------------------------------------------------------------");
+	logger->writeline("                               EVENT SCHEDULER DATA                                  ");
+	logger->writeline("-------------------------------------------------------------------------------------");
+	logger->writeline("                                seed: " + num2str(seed));
+	logger->writeline("                        format station-id:time-scheduled\n");
 
+	for (auto& an_event : payload_events)
+	{
+		logger->write(num2str(an_event.first) + ":" + num2str((uint)an_event.second) + ",");
+	}
+	logger->write("\n");
+
+	logger->writeline("-------------------------------------------------------------------------------------");
+	logger->writeline("                                     PROGRAM LOG                                     ");
+	logger->writeline("-------------------------------------------------------------------------------------\n");
 }
-uivector TrafficGenerator::generate_payload_events(station_number station)
+uivector TrafficGenerator::generate_payload_events(const station_number& tation)
 {
 	uivector events;
 	std::uniform_real_distribution<double> distribution(0.0, 1.0);
