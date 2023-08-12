@@ -45,7 +45,7 @@ Program::Program(unordered_map<string, string>& arglist) : total_data(0)
 	if (arglist.find("pathloss_map") != arglist.end())
 		in_pathloss_map       = arglist.at("pathloss_map");
 	if (arglist.find("simulation_params") != arglist.end())
-		in_simulation_params = arglist.at("simulation_params");
+		in_simulation_params  = arglist.at("simulation_params");
 
 	setup();
 	debugout("Progress [ ");
@@ -271,7 +271,7 @@ void Program::setup()
 	for (auto s : station_list)
 	{
 		auto linkmap = s->getMacLayer()->getmap()->link;
-		for (auto destination_info : linkmap)
+		for (auto& destination_info : linkmap)
 		{
 			auto destination = destination_info.first;
 			if (destination_info.second.dead)

@@ -4,10 +4,27 @@
 * Generic frame functions
 */
 //
+Frame::Frame() :
+	duration_us(0),
+	departureTime(0),
+	modulation_sc(0),
+	mpdu_header_size(0),
+	data_ppdu_size(0)
+{
+}
 Frame::Frame(uint time, uint source, uint seqNum, uint dest, uint mcs, uint datsize, uint fragment) :
-	departureTime(time), control(Field<uint>(0, 2)), payload_bytes(Field<uint>(0, 2)), trans_address(Field<uint>(INFINITY, 6)),
-	rec_address(Field<uint>(INFINITY, 6)), source_address(Field<uint>(source, 6)), fragmentNum(Field<uint>(fragment, 0)),
-	sequenceNum(Field<uint>(seqNum, 2)), destin_address(Field<uint>(dest, 6)), trailer(Field<uint>(INFINITY, 4)), modulation_sc(mcs),
+	duration_us(0),
+	departureTime(time),
+	control(Field<uint>(0, 2)),
+	payload_bytes(Field<uint>(0, 2)),
+	trans_address(Field<uint>(INFINITY, 6)),
+	rec_address(Field<uint>(INFINITY, 6)),
+	source_address(Field<uint>(source, 6)),
+	fragmentNum(Field<uint>(fragment, 0)),
+	sequenceNum(Field<uint>(seqNum, 2)),
+	destin_address(Field<uint>(dest, 6)),
+	trailer(Field<uint>(INFINITY, 4)),
+	modulation_sc(mcs),
 	data_ppdu_size(datsize)
 {
 	mpdu_header_size = control.gsize() + trans_address.gsize() + rec_address.gsize() + source_address.gsize() + sequenceNum.gsize()

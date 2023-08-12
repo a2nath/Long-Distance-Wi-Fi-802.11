@@ -15,7 +15,6 @@ private:
 	map<uint, map<uint, double>> pathloss_table;
 	uivector timeline;
 	vector<sptrStation> station_list;
-	TrafficGenerator TF;
 	gcelltable guimap;
 	/* Source, Reltime, Dur */
 	struct otaobj;

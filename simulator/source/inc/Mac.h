@@ -18,7 +18,7 @@ class MacLayer
 {
 private:
 	McsManager lnkmodes;
-	PhyAdapter * phylayer;
+	PhyAdapter* phylayer;
 	station_number self_ID;
 public:
 	MacLayer(const map<station_number, map<station_number, station_name>>& station_names,
@@ -31,7 +31,7 @@ public:
 
 		/* Decide MCS for each link */
 		auto antenna = phylayer->getAntenna();
-		for (auto &dest_id : Global::connections.dest(self_ID))
+		for (auto& dest_id : Global::connections.dest(self_ID))
 		{
 			auto rx_signal_power = antenna->getChannel()->get_H_factor(dest_id) + Global::txpowers[self_ID];
 			auto noise = antenna->getChannel()->get_effective_noise_dBm();
@@ -66,7 +66,7 @@ public:
 		return lnkmodes.at(station).mcs;
 	}
 
-	PhyAdapter * getPhyLayer()
+	PhyAdapter* getPhyLayer()
 	{
 		return phylayer;
 	}

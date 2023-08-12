@@ -11,9 +11,20 @@ float ave_lat = 0, ave_size = 0, max_lat = 0, max_size = 0;
 
 Station::Station(const string name, const map<uint, map<uint, string>>& station_names,
 	const map<uint, map<uint, double>>& distance, const map<uint, map<uint, double>>& pathloss, gcellvector *guitable)
-	: uniqueID(Global::sta_name_map[name]), self_name(name), difs_finished(false), wait_for_timers(false), guiptr(guitable),
-	trafficgen(NULL), actual_times(NULL), rts_idx(UINT_MAX), ap_mode(self_name == Global::ap_station), sifs_running(false),
-	cts_ack_wrong_pckt(false), dat_int_reset(false), cts_received(false)
+	:
+	uniqueID(Global::sta_name_map[name]),
+	self_name(name),
+	difs_finished(false),
+	wait_for_timers(false),
+	guiptr(guitable),
+	trafficgen(NULL),
+	//actual_times),
+	rts_idx(UINT_MAX),
+	ap_mode(self_name == Global::ap_station),
+	sifs_running(false),
+	cts_ack_wrong_pckt(false),
+	dat_int_reset(false),
+	cts_received(false)
 {
 	logger = logs.stations[this->uniqueID];
 	dot11ShortRetryLimit = Global::dot11ShortRetryLimit;
@@ -79,7 +90,8 @@ void Station::global_update(umap<station_number, Antenna*> &ant_list)
 		trafficgen = new TrafficGenerator(uniqueID, dest_addresses, maclayer->getmap());
 		actual_times = trafficgen->getActualTimes();
 		random_generator = trafficgen->get_generator();
-		if (actual_times->size()) rts_idx = 0;
+		if (actual_times.size())
+			rts_idx = 0;
 	}
 	phy_indication->global_update(ant_list);
 	backoff_timer = unique_ptr<Backoff_Manager>(new Backoff_Manager(uniqueID, random_generator));
@@ -485,7 +497,7 @@ bool Station::trafficPresent()
 {
 	return rts_idx != UINT_MAX;
 }
-uint Station::get_next_rts_time()
+inline uint Station::get_next_rts_time()
 {
 	if (!trafficPresent()) return UINT_MAX;
 	return rts_idx != actual_times->size() ? actual_times->at(rts_idx) : UINT_MAX;
@@ -568,7 +580,8 @@ float Station::total_data_transferred()
 uint Station::prepare_summary()
 {
 	/* keep track of the min and max to be used later */
-	total_data = total_load = total_events_procc = total_events_dropped = last_event = 0;
+	total_events_procc = total_events_dropped = 0;
+	total_data = total_load = last_event = ave_lat = ave_size = max_lat = max_size = 0.0;
 	//total_events_queued = trafficgen != NULL ? actual_times->size() : 0;
 
 	per_station_summary.clear();
@@ -705,7 +718,7 @@ void Station::summrize_sim(Logger* common, float endtime)
 void Station::overall_summary(Logger* logger, float endtime)
 {
 	/* write the global stats */
-	logger->writeline("===================================== STATION " + num2str(uniqueID) + " ====================================\n");
+	logger->writeline("\n===================================== STATION " + num2str(uniqueID) + " ====================================\n");
 	logger->writeline("Total data (Mb)                 :\t" + double2str(total_data, 2));
 	logger->writeline("Station load (Mb/s)             :\t" + double2str(total_load, 2));
 	logger->writeline("Station throughput (Mb/s)       :\t" + double2str(last_event == 0 ? 0 : total_data * 1e6 / last_event, 2));

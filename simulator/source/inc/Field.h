@@ -6,7 +6,7 @@ private:
 	T value;
 	uint size;
 public:
-	Field() {}
+	Field() : value(0), size(0) {}
 	Field(T data, uint size) :
 		value(data), size(size) {}
 	void setval(T data) { this->value = data; }

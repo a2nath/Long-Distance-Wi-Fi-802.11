@@ -13,8 +13,7 @@ protected:
 	Global::frame_map subtype_value;
 
 public:
-	Frame() {}
-	virtual ~Frame() {}
+	Frame();
 	Frame(uint time, uint source, uint seqNum, uint dest, uint mcs, uint datsize, uint fragment = 1);
 	virtual void change_time(uint new_time) = 0;
 	virtual uint getTime() = 0;
@@ -31,6 +30,7 @@ public:
 	virtual uint get_mcs_idx() = 0;
 	virtual uint get_header_size() = 0;
 	virtual uint getFrag() = 0;
+	virtual ~Frame() {}
 };
 
 class RTS : public Frame
