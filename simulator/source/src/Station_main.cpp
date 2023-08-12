@@ -4,10 +4,6 @@
 uint Station::id = 0;
 vector<string> ap_prints;
 
-vector<unordered_map<string, double>> per_station_summary;
-std::map<uint, uint> combined_qlat, combined_qsize;
-float ave_lat = 0, ave_size = 0, max_lat = 0, max_size = 0;
-
 
 Station::Station(const string name, const map<uint, map<uint, string>>& station_names,
 	const map<uint, map<uint, double>>& distance, const map<uint, map<uint, double>>& pathloss, gcellvector *guitable)
@@ -82,14 +78,21 @@ void Station::reset_receiver(uint current_time, bool special)
 	}
 	phy_indication->cca_reset();
 }
+
+inline const uint Station::get_next_dest_id() const
+{
+	return actual_times.dest(rts_idx);
+}
+
 void Station::global_update(umap<station_number, Antenna*> &ant_list)
 {
 	/* if traffic exists for this stations, then define the traffic parameters, otherwise they stay NULL */
 	if (!dest_addresses.empty())
 	{
-		trafficgen = new TrafficGenerator(uniqueID, dest_addresses, maclayer->getmap());
-		actual_times = trafficgen->getActualTimes();
-		random_generator = trafficgen->get_generator();
+		auto& scheduler = actual_times;
+
+		trafficgen = new TrafficGenerator(uniqueID, dest_addresses, maclayer->getmap(), scheduler.data, random_generator);
+
 		if (actual_times.size())
 			rts_idx = 0;
 	}
@@ -123,6 +126,10 @@ bool Station::channel_update(vector<station_number> &interferers)
 PhyAdapter * Station::getPhyLayer()
 {
 	return phyadapter;
+}
+void Station::set_link_to_dead(station_number station)
+{
+	maclayer->set_to_dead(station);
 }
 MacLayer * Station::getMacLayer()
 {
@@ -293,7 +300,7 @@ sptrRTS Station::genRTS(const uint current_time)
 	if (get_next_rts_time() > current_time) return NULL;
 
 	source = this->uniqueID;
-	destination = trafficgen->getDest();
+	destination = get_next_dest_id();
 	seqNum = rts_idx;
 	auto mcs = 0;
 	auto data_dur = data_size(Global::data_pack_size + mpdu_header_size, maclayer->mcs_map(destination));
@@ -332,7 +339,7 @@ std::shared_ptr<Frame> Station::tx_dequeue(uint current_time)
 	{
 		retry_offset(-1);
 		logger->writeline(num2str(current_time) + " qsize: " + num2str(txQueue.size())
-			+ " queue-time " + num2str(actual_times->at(txBuffer.seqn())) + " at RTS release(" + num2str(frame->getDest()) + "), seq"
+			+ " queue-time " + num2str(actual_times.time(txBuffer.seqn())) + " at RTS release(" + num2str(frame->getDest()) + "), seq"
 			+ num2str(txBuffer.seqn()) + (txBuffer.abs_re() == dot11ShortRetryLimit ? ", try " : ", retry ") + num2str(txBuffer.abs_re()));
 		return frame;
 	}
@@ -424,7 +431,7 @@ void Station::tx_response(uint current_time, Frame *received_frame, vector<sptrF
 		}
 
 		seq = txqueue_seq();
-		devent[source][actual_times->at(seq != sequence ? sequence : txBuffer.seqn())] = current_time;
+		devent[source][actual_times.time(seq != sequence ? sequence : txBuffer.seqn())] = current_time;
 		if (seq != sequence)
 		{
 			logger->writeline(num2str(current_time) + " seq" + num2str(sequence) + " drop recovered (" + num2str(dropped_count.at(source)) + " already dropped)");
@@ -500,7 +507,7 @@ bool Station::trafficPresent()
 inline uint Station::get_next_rts_time()
 {
 	if (!trafficPresent()) return UINT_MAX;
-	return rts_idx != actual_times->size() ? actual_times->at(rts_idx) : UINT_MAX;
+	return rts_idx != actual_times.size() ? actual_times.time(rts_idx) : UINT_MAX;
 }
 Indication &Station::get_phy_indication()
 {
@@ -582,11 +589,6 @@ uint Station::prepare_summary()
 	/* keep track of the min and max to be used later */
 	total_events_procc = total_events_dropped = 0;
 	total_data = total_load = last_event = ave_lat = ave_size = max_lat = max_size = 0.0;
-	//total_events_queued = trafficgen != NULL ? actual_times->size() : 0;
-
-	per_station_summary.clear();
-	combined_qlat.clear();
-	combined_qsize.clear();
 
 	for (auto& station : dest_addresses)
 	{

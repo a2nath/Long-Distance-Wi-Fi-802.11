@@ -2,22 +2,46 @@
 #include <string>
 #include "Phy.h"
 
-struct McsManager
+/* stores state of the link and msc index */
+struct MCSDataManager
 {
-	struct lpair { bool dead; uint mcs; };
-	umap<station_number, lpair> link;
-	uint& operator[](station_number station) { link[station].dead = false; return link[station].mcs; }
-	bool& operator()(station_number station) { return link.at(station).dead; }
-	lpair at(station_number station) { return link.at(station); }
-	umap<station_number, mcs_index> mcss() { umap<station_number, mcs_index> ret; for (auto m : link) ret[m.first] = m.second.mcs; return ret; }
-	bool dead(station_number station, bool isdead) { return link.at(station).dead = isdead; }
-	bool find(station_number station) { return link.find(station) != link.end(); }
+	struct link_datapair
+	{
+		uint mcs;
+		bool dead;
+	};
+
+	umap<station_number, link_datapair> link;
+
+	void add(station_number station, uint _mcs, bool _dead)
+	{
+		link[station] = { _mcs, _dead };
+	}
+	void setdead(station_number station)
+	{
+		link.at(station).dead = true;
+	}
+	const link_datapair at(station_number station) const
+	{
+		return link.at(station);
+	}
+	umap<station_number, mcs_index> mcss()
+	{
+		umap<station_number, mcs_index> ret;
+		for (auto& m : link)
+			ret[m.first] = m.second.mcs;
+		return ret;
+	}
+	bool isLinked(station_number station)
+	{
+		return link.find(station) != link.end();
+	}
 };
 
 class MacLayer
 {
 private:
-	McsManager lnkmodes;
+	MCSDataManager lnkmodes;
 	PhyAdapter* phylayer;
 	station_number self_ID;
 public:
@@ -37,28 +61,31 @@ public:
 			auto noise = antenna->getChannel()->get_effective_noise_dBm();
 			double SNR = ((int)((rx_signal_power - noise) * (double)100.0)) / (double)100.0;
 
-			for (int mcs = max_mcs_count - 1; mcs > -1; --mcs)
+			for (int mcs = max_mcs_count - 1; mcs >= 0; --mcs)
 			{
 				auto per = get_per(mcs2name.at(mcs), SNR);
 				if (per <= .01)
 				{
-					lnkmodes[dest_id] = mcs;
+					lnkmodes.add(dest_id, mcs, false);
 					break;
 				}
 			}
 
-			if (!lnkmodes.find(dest_id))
+			if (!lnkmodes.isLinked(dest_id))
 			{
-				lnkmodes[dest_id] = 0;
-				lnkmodes(dest_id) = true;
+				lnkmodes.add(dest_id, 0, true);
 			}
 		}
 		phylayer->get_PhyRate().update(lnkmodes.mcss());
 	}
 
-	McsManager* getmap()
+	inline void set_to_dead(station_number station)
 	{
-		return &lnkmodes;
+		lnkmodes.setdead(station);
+	}
+	const MCSDataManager& getmap() const
+	{
+		return lnkmodes;
 	}
 
 	unsigned mcs_map(station_number station)

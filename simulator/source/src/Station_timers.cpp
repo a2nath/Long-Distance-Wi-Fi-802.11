@@ -28,7 +28,7 @@ void Station::update_timers(uint current_time, Frame *received_frame)
 			}
 			else
 			{
-				auto frame = txBuffer.get(actual_times->at(txBuffer.seqn()));
+				auto frame = txBuffer.get(actual_times.time(txBuffer.seqn()));
 				if (frame != NULL && frame->getTime() == current_time - dot11a_difs)
 				{
 					txBuffer.buf.first = dot11ShortRetryLimit + 1;

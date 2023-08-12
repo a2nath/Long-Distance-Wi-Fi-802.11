@@ -36,8 +36,11 @@ private:
 
 	/* profiling variables */
 	Logger *logger;
+	vector<unordered_map<string, double>> per_station_summary;
+	std::map<uint, uint> combined_qlat, combined_qsize;
+	float total_data, total_load, last_event, ave_lat, ave_size, max_lat, max_size;
+
 	gcellvector *guiptr;
-	float total_data, total_load, last_event;
 	umap<station_number, prop_del_us> rrt_map;
 	umap<station_number, std::map<uint, uint>> devent;
 	umap<station_number, std::map<uint, uint>> queue_size;
@@ -115,12 +118,14 @@ private:
 	uint datasize;
 	uint transmitted_frame_count;
 	TrafficGenerator * trafficgen;
-	std::vector<uint> * actual_times;
+	EventData_S actual_times;
+
 	uint rts_idx;
 	uint simtime;
 	uint mpdu_header_size;
 
 	void decode_frame(uint current_time, Frame * rx_frame, vector<sptrFrame>& wireless_channel);
+	const uint get_next_dest_id() const;
 	uint get_next_rts_time();
 	bool trafficPresent();
 	bool exp_cts_ack_resp(int &type);
@@ -181,6 +186,7 @@ public:
 	uint getID();
 	float get_data_bytes(uint station);
 	std::shared_ptr<Frame> lookup_buffer(uint current_time, Frame * frame);
+	void set_link_to_dead(station_number station);
 	MacLayer * getMacLayer();
 	PhyAdapter * getPhyLayer();
 	Indication& get_phy_indication();

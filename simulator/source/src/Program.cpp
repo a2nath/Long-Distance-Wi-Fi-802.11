@@ -270,13 +270,13 @@ void Program::setup()
 	umap<station_number, Antenna*> ant_list;
 	for (auto s : station_list)
 	{
-		auto linkmap = s->getMacLayer()->getmap()->link;
+		auto linkmap = s->getMacLayer()->getmap().link;
 		for (auto& destination_info : linkmap)
 		{
 			auto destination = destination_info.first;
 			if (destination_info.second.dead)
 			{
-				(*station_list[destination]->getMacLayer()->getmap())(s->getID()) = true;
+				station_list[destination]->set_link_to_dead(s->getID());
 			}
 		}
 		ant_list[s->getID()] = s->getPhyLayer()->getAntenna();
