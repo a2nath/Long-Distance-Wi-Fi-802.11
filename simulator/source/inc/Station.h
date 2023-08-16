@@ -34,7 +34,7 @@ private:
 	std::mt19937_64 random_generator;
 
 	/* profiling variables */
-	Logger *logger;
+	Logger* logger;
 	vector<unordered_map<string, double>> per_station_summary;
 	std::map<uint, uint> combined_qlat, combined_qsize;
 	float total_data, total_load, last_event, ave_lat, ave_size, max_lat, max_size;
@@ -228,10 +228,10 @@ public:
 	/* gathers data from the network and station and returns the last event */
 	uint prepare_summary();
 	void summrize_sim(Logger* common, float endtime);
-	void overall_summary(Logger * logger, float endtime);
+	void overall_summary(Logger* logger, float endtime);
 	float total_data_transferred();
 	void buffer_ap_stats(string input);
 	void unbuffer_ap_stats(Logger* logger);
-	void queue_status(Logger * logger);
+	void queue_status(Logger* logger);
 	bool active();
 };

@@ -19,9 +19,9 @@ Station::Station(const string name, const map<uint, map<uint, string>>& station_
 	sifs_running(false),
 	cts_ack_wrong_pckt(false),
 	dat_int_reset(false),
-	cts_received(false)
+	cts_received(false),
+	logger(logs.stations[uniqueID])
 {
-	logger = logs.stations[this->uniqueID];
 	dot11ShortRetryLimit = Global::dot11ShortRetryLimit;
 	resetPacketMode();
 	datasize = Global::data_pack_size;

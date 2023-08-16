@@ -1,5 +1,8 @@
 #include <math.h>
 #include <iostream>
+#include <cassert>
+#include <functional>
+#include "json/json.h"
 #include "../inc/common.h"
 #define _USE_MATH_DEFINES
 
@@ -12,7 +15,7 @@ std::string error_rate_file = "lut_error_rate_table.txt";
 std::string in_mapping_file = "splat_station_bindings.txt";
 std::string in_distance_map = "splat_distance_table.txt";
 std::string in_pathloss_map = "splat_pathloss_table.txt";
-std::string in_simulation_params = "simulation_params.txt";
+std::string in_simulation_params = "simulation_parameters.json";
 
 umap<uint, std::string> Global::mcs_vs_modname = {
 	{ 0, "BPSK12" },
@@ -60,7 +63,6 @@ uint Global::channel_number;
 uint Global::traffic_type;
 std::vector<unsigned long int> Global::seeds;
 std::vector<float> Global::txpowers;
-std::multimap<station_number, float> Global::traffic_load;
 float Global::bandwidth;
 float Global::frequency;
 uint Global::produration;
@@ -221,10 +223,7 @@ void dout(string message, bool throw_error)
 /* IO functions to take inputs */
 namespace IO
 {
-
-#include <cassert>
 	using namespace std;
-
 
 	inline void getstream(string filename, vector<string>& out)
 	{
@@ -319,15 +318,169 @@ namespace IO
 		}
 	}
 
+	void json_parser(string input_file)
+	{
+		Json::Value root;
+		ifstream ifs;
+		ifs.open(input_file);
+
+		Json::CharReaderBuilder builder;
+		builder["collectComments"] = false;
+		JSONCPP_STRING errs;
+		if (!parseFromStream(builder, ifs, &root, &errs)) {
+			cout << errs << endl;
+			throw runtime_error("Parser problem: " + num2str(EXIT_FAILURE));
+		}
+
+		/* helper function to break the cvs delimeters */
+		const auto get_tokens = [](string input) {
+
+			//auto input = jinput.asString();
+			size_t idx2 = input.find(',');
+			vector<string> out;
+
+			if (idx2 < string::npos)
+			{
+				size_t idx = 0;
+				while (idx2 < string::npos)
+				{
+					out.emplace_back(input.substr(idx, idx2 - idx));
+					idx = idx2 + 1;
+					idx2 = input.find(',', idx2 + 1);
+				}
+				out.emplace_back(input.substr(idx, idx2 - idx));
+			}
+			return out.size() ? out : vector<string>{ 1, input };
+		};
+
+		/* gather the data */
+		unordered_map<string, vector<string>> inputs;
+		for (Json::Value::const_iterator outer = root.begin(); outer != root.end(); outer++)
+		{
+			if (outer.key().compare("stations") == 0
+				|| outer.key().compare("duration-milliseconds") == 0
+				|| outer.key().compare("backoff") == 0)
+			{
+				for (Json::Value::const_iterator inner = (*outer).begin(); inner != (*outer).end(); inner++)
+				{
+					inputs.emplace(inner.key().asString(), get_tokens((*inner).asString()));
+				}
+			}
+			else
+			{
+				inputs.emplace(outer.key().asString(), get_tokens((*outer).asString()));
+			}
+		}
+
+		try
+		{
+			Global::traffic_type = inputs["connection-type"][0] == "tcp" ? 1 : 0;
+
+			int idx = 0;
+			for (auto& name : inputs["names"])
+				Global::sta_name_map.emplace(name, idx++);
+
+			Global::sta_name_map.emplace(Global::ap_station, idx++);
+			Global::station_count = Global::sta_name_map.size();
+
+			for (auto& txpower : inputs["transmit-power-dbm"])
+				Global::txpowers.emplace_back(stod(txpower));
+
+			if (Global::txpowers.size() != Global::sta_name_map.size())
+				error_out("Transmit powers list is not the same size as station list");
+
+			Global::data_pack_size = stod(inputs["databytes-bytes"][0]);
+			Global::produration = stod(inputs["program"][0]) * 1000;
+			Global::simduration = stod(inputs["simulation"][0]) * 1000;
+			Global::DEBUG_END = stod(inputs["endtime"][0]) * 1000;
+
+			Global::data_fragments = stod(inputs["segments"][0]);
+			Global::frequency = stod(inputs["frequency"][0]);
+			Global::bandwidth = stod(inputs["bandwidth"][0]);
+			Global::adapt_int_tout = inputs["adaptive-timeout"][0] == "yes" ? true : false;
+
+			Global::prop_factor = stof(inputs["pfactor"][0]);
+			Global::chwindow = stoi(inputs["channel-window"][0]);
+			Global::aCWmax = stoi(inputs["aCWmax"][0]);
+			Global::aCWmin = stoi(inputs["aCWmin"][0]);
+
+			if (Global::aCWmin > Global::aCWmax)
+				error_out("CWmin is greater than CWmax");
+
+#ifdef REDUNDANT_RETRIES
+			if (stoi(inputs["relimit"][0]) > 0)
+				error_out("Retry number problem");
+			Global::dot11ShortRetryLimit = stoi(inputs["relimit"][0]);
+#else
+			uint retry_limit = stoi(inputs["relimit"][0]);
+			uint validretry = log2(Global::aCWmax) - log2(Global::aCWmin) + 1.0;
+			Global::dot11ShortRetryLimit = validretry != retry_limit ? validretry : retry_limit;
+#endif
+
+			/* setup the traffic generator and random number of generator */
+
+			for (auto& seed : inputs["seeds"])
+			{
+#ifndef DETERMINISTIC
+				Global::seeds.emplace_back(std::random_device()());
+#else
+				Global::seeds.emplace_back(stoul(seed));
+#endif
+			}
+
+			if (inputs["trafficload-megabits"].size() != (Global::sta_name_map.size() - 1) * 2)
+				error_out("Traffic load list is not twice as long as the station list for downstream and upstream link");
+
+			/* create the connections and set the medium load */
+#ifndef AP_MODE
+			if (inputs["connections"].size() != Global::sta_name_map.size())
+				error_out("Connections list is not the same as station list");
+
+			for (int downstream_id = 0; downstream_id < inputs["connections"].size(); ++downstream_id)
+			{
+
+				auto& connection = inputs["connections"][downstream_id];
+				uint source = stoi(connection.substr(0, connection.find(":")));
+				uint dest = stoi(connection.substr(connection.find(":") + 1));
+				Global::connections.create(source, dest);
+
+				auto& loads = inputs["trafficload-megabits"];
+				auto upstream_id = (loads.size() / 2) + downstream_id;
+
+				Global::connections.setload(source, dest, stod(loads[downstream_id]));
+				Global::connections.setload(dest, source, stod(loads[upstream_id]));
+#else
+			for (int downstream_id = 0; downstream_id < Global::sta_name_map.size() - 1; ++downstream_id)
+			{
+				Global::connections.create(downstream_id, Global::sta_name_map[Global::ap_station]);
+
+				auto& loads      = inputs["trafficload-megabits"];
+				auto  ap_id      = Global::station_count - 1;
+				auto upstream_id = (loads.size() / 2) + downstream_id;
+
+				Global::connections.setload(downstream_id, ap_id, stod(loads[downstream_id]));
+				Global::connections.setload(ap_id, downstream_id, stod(loads[upstream_id]));
+#endif
+			}
+		}
+		catch (invalid_argument& arg)
+		{
+			dout("Arg: " + string(arg.what()) + ". Was not a valid argument to convert from the json input file", true);
+		}
+		catch (out_of_range& arg)
+		{
+			dout("Arg: " + string(arg.what()) + ". Was not a valid index to reference from, in the json input file", true);
+		}
+	}
+
 	/* returns the input file as is if asked */
-	vector<string> readfile(string filename, vector<vector<string>>& out, bool return_contents)
+	void readfile(string filename, vector<vector<string>>& out)
 	{
 		vector<string> file_contents, csvline;
-
+		getstream(filename, file_contents);
 		out.clear();
 
 		// Read the input file for simulation parameters
-		getstream(filename, file_contents);
 
 		for (auto& fline : file_contents)
 		{
@@ -347,13 +500,77 @@ namespace IO
 				getline(ss, csvline[i], ',');
 			}
 
-			if (csvline.size() > 1 && return_contents == true) // remove the label field
-				csvline.erase(csvline.begin());
-
 			out.push_back(csvline);
 			csvline.clear();
 		}
+	}
 
-		return return_contents ? file_contents : vector<string>();
+	void copy_input_to_log(Logger* log, string& output_path)
+	{
+		vector<string> file_contents;
+		getstream(log->getname(), file_contents);
+
+		string token_conns = "connections\": \"";
+		string token_seeds = "seeds\": \"";
+		string token_retry = "relimit\": \"";
+		string token_load = "trafficload_medebits\": \"";
+		string load_data_from_input = "";
+
+		/* 3 conditions where the inputs will be re-interpreted by the program */
+		vector<string> output_buff;
+
+		for (auto& line : file_contents)
+		{
+			auto idx = line.find(token_conns);
+			if (idx != string::npos)
+			{
+				auto idx2 = line.rfind("\"");
+				idx += token_seeds.size();
+				string connections = Global::connections.to_string();
+				line.replace(idx, idx2 - idx + 1, connections);
+			}
+
+			idx = line.find(token_seeds);
+			if (idx != string::npos)
+			{
+				auto idx2 = line.rfind("\"");
+				idx += token_seeds.size();
+				string seeds = "";
+				for (auto& seed : Global::seeds)
+				{
+					seeds += seed + ",";
+				}
+				seeds.pop_back();
+				line.replace(idx, idx2 - idx + 1, seeds);
+			}
+
+			idx = line.find(token_retry);
+			if (idx != string::npos)
+			{
+				auto idx2 = line.rfind("\"");
+				idx += token_retry.size();
+				auto retry_str = num2str(Global::dot11ShortRetryLimit);
+				line.replace(idx, idx2 - idx + 1, retry_str);
+			}
+
+			if (load_data_from_input.empty())
+			{
+				idx = line.find(token_load);
+				if (idx != string::npos)
+				{
+					load_data_from_input = line.substr(idx, line.rfind("\""));
+				}
+			}
+
+			output_buff.emplace_back(line);
+		}
+
+		auto filename = "Summary_[" + load_data_from_input + "]";
+		log = new Logger(output_path, filename);
+
+		log->writeline("=================================== INPUT FILE =====================================");
+		for (auto& line : output_buff)
+			log->writeline(line);
+		log->writeline("====================================================================================");
 	}
 }

@@ -1,0 +1,52 @@
+// simulation parameters for the network simulation
+{
+  "stations": {
+    // specific station name from the binding file to choose from
+    "names": "Small_Butte,Small_Butte_Jr,Rocker",
+    // define the link between stations(x:y) in the seq defined in "stations"
+    "connections": "0:1,0:2,0:3",
+    // define the input load on each link in the network in megabytes
+    "trafficload-megabits": "16,16,16,4,4,4",
+    // power of the antenna, last one is AP in dBm
+    "transmit-power-dbm": "30,30,30,35"
+  },
+  // type of connection, tps involves handshaking
+  "connection-type": "tcp",
+  //"connection_type": "udp",
+  "duration-milliseconds": {
+    // length of time window the program will run (packets may be left untransmitted)
+    "program": "400",
+    // time window in which scheduler will schedule packets
+    "simulation": "10000",
+    // debug end time in case it is needed for quick GUI debugs
+    "endtime": "400"
+  },
+  // size of the data payload for each DATA PPDU
+  "databytes-bytes": "1500",
+  // center frequency of the TX/RX
+  "frequency": "530e6",
+  // bandwidth of the channel
+  "bandwidth": "20e6",
+  // number of parts 1 DATA PPDU is split into
+  "segments": "1",
+  // timeout to use when classic 802.11 protocol is not enough
+  "adaptive-timeout": "no",
+  // propagation delay scale factor, long-distance: 0 < p <= 1, full distance is 1
+  "pfactor": "1",
+  // backoff window length
+  "channel-window": "3",
+  // random number seed
+  "backoff": {
+    // backoff window upper bound
+    "aCWmax": "1024",
+    // backoff window lower bound
+    "aCWmin": "16",
+    // retry limit
+    "relimit": "7"
+  },
+  "seeds": "1656796048,587255895,3725192901,2738904699"
+}
+
+
+
+

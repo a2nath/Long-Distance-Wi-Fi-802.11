@@ -1,10 +1,14 @@
 #include "../inc/Program.h"
+
 #ifdef SHOWGUI
 #include "../inc/GUI.h"
 #endif
 
 int main(int argc, char *argv[])
 {
+
+	chdir("../");
+
 	unordered_map<string, string> arglist;
 
 	for (int i = 0; i < argc; ++i)

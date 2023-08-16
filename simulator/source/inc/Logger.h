@@ -47,7 +47,7 @@ public:
 		writer_idx = 0;
 	}
 
-	Logger(int station_id, string& outputdir, string& station_name)
+	Logger(const string& station_name, uint station_id, string outputdir)
 	{
 		/* creat a new directory for station-specific data */
 		station_dir = outputdir + "station " + to_string(station_id) + "/";
@@ -59,7 +59,6 @@ public:
 
 		writers.emplace_back(main_file);
 		writer_idx = 0; // main writer
-
 	}
 
 	~Logger() { done(); }
@@ -84,16 +83,6 @@ public:
 		}
 	}
 
-	void print_input_file(vector<string> &filecontents, string seeds, string retrylim, int idx)
-	{
-		writeline("=================================== INPUT FILE =====================================");
-		for (int i = 0; i < filecontents.size()-1; ++i)
-		{
-			writeline(i == idx ? seeds : filecontents[i]);
-		}
-		writeline("relimit," + retrylim);
-		writeline("====================================================================================");
-	}
 	template<class T>
 	void writeline(T d)
 	{

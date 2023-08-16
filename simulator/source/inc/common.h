@@ -24,6 +24,8 @@
 *
 *
 ---------------------------*/
+#define AP_MODE
+#define DETERMINISTIC
 
 /* windows specific code  */
 #ifdef _WIN32
@@ -81,7 +83,9 @@ namespace IO
 	using namespace std;
 	void read_packet_error_rate_lut();
 	void read_symbol_error_rate_lut();
-	vector<string> readfile(string filename, vector<vector<string>>& out, bool = false);
+	void json_parser(string input_file);
+	void readfile(string filename, vector<vector<string>>& out);
+	void copy_input_to_log(Logger* logger, string& output_path);
 }
 
 typedef unsigned int uint;
@@ -154,6 +158,7 @@ template <class U> float ave(std::vector<U> &list)
 
 /* Logging Objects */
 struct Global {
+	static std::map<std::string, uint> sta_name_map;
 	static umap<uint, std::string> mcs_vs_modname;
 	static umap<std::string, double> data_bits_per_OFDM_symbol;
 	static umap<std::string, float> PER_thrsh;
@@ -175,7 +180,6 @@ struct Global {
 	static uint produration;
 	static uint simduration;
 	static bool adapt_int_tout;
-	static std::map<std::string, uint> sta_name_map;
 	static float prop_factor;
 	static uint DEBUG_END;
 	static uint chwindow;
@@ -184,14 +188,15 @@ struct Global {
 	static uint dot11ShortRetryLimit;
 	enum frame_map { _DATA = 0b0000, _RTS = 0b1011, _CTS = 0b1100, _ACK = 0b1101 };
 };
+
 struct Logs {
 	vector<Logger*> stations;
-	Logger *common;
+	Logger* common;
 
 	void done(string s = "")
 	{
 		auto name = common->getname();
-		for (auto &sta : stations)
+		for (auto& sta : stations)
 		{
 			sta->writeline("\n\n\nOverall simulation duration " + s + " ms");
 			delete sta;
@@ -204,6 +209,15 @@ struct Logs {
 #else
 		cout << "Logs saved in directory " << system(string("dirname " + name + "").c_str()) << endl;
 #endif
+	}
+
+	void setup_station_logs(const string& path)
+	{
+		/* create stations and their logs */
+		for (auto& data : Global::sta_name_map)
+		{
+			stations.emplace_back(new Logger(data.first, data.second, path));
+		}
 	}
 
 	Logs() : common(nullptr) {}

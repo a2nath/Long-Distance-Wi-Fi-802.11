@@ -3,7 +3,7 @@
 #include <chrono>
 #include "../inc/Program.h"
 
-#define AP_MODE
+
 #define str2uint str2num<uint>
 #define str2double str2num<double>
 #define str2long str2num<unsigned long int>
@@ -104,8 +104,6 @@ void Program::setup()
 	vector<vector<double>> sta_distances;
 	vector<vector<double>> sta_pathlosses;
 
-	chdir("../");
-
 	IO::readfile(input_dir + in_mapping_file, output);
 
 	sta_names.resize(output.size(), vector<string>(output.size()));
@@ -131,38 +129,13 @@ void Program::setup()
 			sta_pathlosses[i][j] = str2double(output[i][j]);
 
 	/* Read the input parameters from the INPUT file */
-	vector<string> selected_stations;
-	vector<string> input_file_contents = IO::readfile(input_dir + in_simulation_params, output, true);
+	IO::json_parser(input_dir + in_simulation_params);
 
-	Global::traffic_type = output[conns][0] == "udp" ? 0 : 1;
-	Global::DEBUG_END = str2double(output[debugend][0]) * 1000;
 	debug_endtime = Global::DEBUG_END;
 
-	for (auto& s : output[antpower])
-		Global::txpowers.emplace_back(str2double(s));
-
-	Global::data_pack_size = str2double(output[datbytes][0]);
-	Global::produration = str2double(output[progdur][0]) * 1000; // in microseconds
-	Global::simduration = str2double(output[simdur][0]) * 1000;  // in microseconds
-	Global::data_fragments = str2double(output[dsegments][0]);
-	Global::frequency = str2double(output[fquency][0]);
-	Global::bandwidth = str2double(output[bwidth][0]);
-	Global::adapt_int_tout = output[atout][0] == "yes" ? true : false;
-	selected_stations = output[stanames];
-	selected_stations.emplace_back(Global::ap_station);
-	Global::station_count = selected_stations.size();
-	Global::prop_factor = str2double(output[pfactor][0]);
-	Global::chwindow = str2uint(output[chwdow][0]);
-	Global::aCWmax = str2uint(output[acwmax][0]);
-	Global::aCWmin = str2uint(output[acwmin][0]);
-#ifdef REDUNDANT_RETRIES
-	if (!str2uint(output[relim][0])) error_out("Retry number problem");
-	Global::dot11ShortRetryLimit = str2uint(output[relim][0]);
-#else
-	uint re = str2uint(output[relim][0]);
-	uint validre = log2(Global::aCWmax) - log2(Global::aCWmin) + 1;
-	Global::dot11ShortRetryLimit = validre != re ? validre : re;
-#endif
+	vector<string> selected_stations;
+	for (auto& sta : Global::sta_name_map)
+		selected_stations.emplace_back(sta.first);
 
 	dout("\n\n");
 	dout(">>>>>>>>>>>>>>>>>>>>>>>>>>>   RETRY LIMIT    : " + num2str(Global::dot11ShortRetryLimit) + "      <<<<<<<<<<<<<<<<<<");
@@ -173,34 +146,8 @@ void Program::setup()
 	IO::read_packet_error_rate_lut();
 	IO::read_symbol_error_rate_lut();
 
-
-	/* setup the traffic generator and random number of generator */
-#ifndef DETERMINISTIC
-	for (auto& s : selected_stations) Global::seeds.push_back(std::random_device()());
-#else
-	for (auto& s : output[seed]) Global::seeds.push_back(str2long(s));
-#endif
-
-	for (int i = 0; i < output[payload_rate].size(); ++i)
-	{
-		auto s = output[payload_rate][i];
-		if (i >= Global::station_count)
-			Global::traffic_load.insert(std::pair<uint, float>(Global::station_count-1, str2double(s)));
-		else
-			Global::traffic_load.insert(std::pair<uint, float>(i, str2double(s)));
-	}
 	simultaneous_tx = Global::station_count * Global::chwindow;
 	inters.reserve(Global::station_count - 1);
-
-	/* build the map of station and IDs*/
-	auto station_count = selected_stations.size();
-	if (Global::traffic_load.size() < station_count || Global::txpowers.size() != station_count)
-		error_out("traffic load: Input file wrong");
-
-	for (uint sta = 0; sta < station_count; ++sta)
-	{
-		Global::sta_name_map[selected_stations[sta]] = sta;
-	}
 
 	/* Shortlist stations based on the selected stations in the input file */
 	vector<pair<int, int>> indices, indices2;
@@ -235,39 +182,28 @@ void Program::setup()
 		pathloss_table[norm_idx.first][norm_idx.second] = sta_pathlosses[abs_idx.first][abs_idx.second];
 	}
 
-	/* define connections*/
-#ifndef AP_MODE
-	for (uint i = 0; i < output[conns].size(); i += 2)
+
+	/* start logging from here onwards */
+	create_dir(output_dir);
+	path = output_dir + create_tstamp() + (WirelessChannel::isLongDistance() ? ("-L-" + num2str(Global::aCWmax)
+		+ "-" + num2str(Global::aCWmin)) : "") + "/";
+	create_dir(path);
+
+	logs.setup_station_logs(path);
+
+#ifdef SHOWGUI
+	/* initialize the gui_map */
+	guimap.resize(Global::station_count, gcellvector(Global::produration));
+	for (auto& data : Global::sta_name_map)
 	{
-		uint source = stoi(output[conns][i]);
-		uint dest = stoi(output[conns][i + 1]);
-		Global::connections.add(source, dest);
+		station_list.emplace_back(new Station(data.first, station_names, distance_table, pathloss_table, &guimap[sta]));
 #else
-	for (int sid = 0; sid < station_count; ++sid)
+	for (auto& data : Global::sta_name_map)
 	{
-		if (sid == Global::sta_name_map[Global::ap_station])
-			continue;
-		Global::connections.create(sid, Global::sta_name_map[Global::ap_station]);
+		station_list.emplace_back(new Station(data.first, station_names, distance_table, pathloss_table, nullptr));
 #endif
 	}
 
-	create_dir(output_dir);
-
-	path = output_dir + create_tstamp() + (WirelessChannel::isLongDistance() ? ("-L-" + num2str(Global::aCWmax)
-		+ "-" + num2str(Global::aCWmin)) : "") + "/";
-
-	create_dir(path);
-
-	/* initialize the gui_map */
-	gcellvector init(Global::produration);
-	guimap.resize(station_count, init);
-
-	/* create stations and their logs */
-	for (uint sta = 0; sta < station_count; ++sta)
-	{
-		logs.stations.push_back(new Logger(sta, path, selected_stations[sta]));
-		station_list.push_back(sptrStation(new Station(selected_stations[sta], station_names, distance_table, pathloss_table, &guimap[sta])));
-	}
 	/* remove the dead links from the downlink if uplink thinks AP is unreachable (inefficient) */
 	umap<station_number, Antenna*> ant_list;
 	for (auto s : station_list)
@@ -286,22 +222,13 @@ void Program::setup()
 	for (auto s : station_list) s->global_update(ant_list); // finally assign traffic for the stations
 
 	/* clear the channel during the times of simulation */
-	vector<sptrFrame> station(Global::produration, NULL);
-	channel.resize(station_count, station);
+	channel.resize(Global::station_count, vector<sptrFrame>(Global::produration, NULL));
 
 	for (auto &source : station_list)
 		proptable[source->getID()] = source->getAllPropagationDelays();
 
-	vector<float> loads;
-	for (auto sta : station_list)
-	{
-		auto a = mltimap2vector(Global::traffic_load, sta->getID());
-		loads.insert(loads.end(), a.begin(), a.end());
-	}
+	IO::copy_input_to_log(logs.common, path);
 
-	auto filename =  "Summary [" + num2str(loads) + "]";
-	logs.common = new Logger(path, filename);
-	logs.common->print_input_file(input_file_contents, "seeds," + num2str(Global::seeds), num2str(Global::dot11ShortRetryLimit), seed);
 }
 
 void Program::phy_cca_indication(uint now, uint destination_id)
