@@ -169,7 +169,6 @@ struct Global {
 	static std::vector<unsigned long int> seeds;
 	// in Watts
 	static std::vector<float> txpowers;
-	static std::multimap<station_number, float> traffic_load;
 	static std::string ap_station;
 	static float bandwidth;
 	static float frequency;
@@ -206,6 +205,8 @@ struct Logs {
 		cout << "Logs saved in directory " << system(string("dirname " + name + "").c_str()) << endl;
 #endif
 	}
+
+	Logs() : common(nullptr) {}
 };
 extern Logs logs;
 
