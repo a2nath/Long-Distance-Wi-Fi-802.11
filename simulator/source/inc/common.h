@@ -15,6 +15,7 @@
 /* possible macros that can be enabled from here or in the compile script
 *
 *
+#define AP_MODE
 #define DETERMINISTIC             // use the same seed between simulations for rng
 #define SHOWGUI                   // show the visualization if API is available
 #define SHOWOUT                   // more verbose output
@@ -25,7 +26,6 @@
 *
 ---------------------------*/
 #define AP_MODE
-#define DETERMINISTIC
 
 /* windows specific code  */
 #ifdef _WIN32
