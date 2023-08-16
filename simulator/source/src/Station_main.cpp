@@ -713,7 +713,6 @@ void Station::summrize_sim(Logger* common, float endtime)
 
 	/* write network summary */
 	overall_summary(common, endtime);
-	queue_status(common);
 }
 
 void Station::overall_summary(Logger* logger, float endtime)
@@ -744,6 +743,18 @@ void Station::overall_summary(Logger* logger, float endtime)
 	{
 		logger->writeline("WARNING: All packets dropped while trying to send to destination");
 	}
+
+	logger->writeline("Average latency (ms)            :\t" + double2str(combined_qlat.empty() ? 0 : ave_lat / combined_qlat.size(), 2));
+	logger->writeline("Maximum latency (ms)            :\t" + double2str(max_lat, 2));
+	logger->writeline("Average queue size              :\t" + double2str(combined_qsize.empty() ? 0 : ave_size / combined_qsize.size(), 2));
+	logger->writeline("Maximum queue size              :\t" + num2str((int)max_size));
+	logger->writeline("\n\n");
+
+	//#ifndef SHOWGUI
+	//	if (Global::DEBUG_END > 50000
+	//		&& total_events_ququed != (total_events_procc + total_events_dropped))
+	//		error_out("NOT DONE YET. PACKETS LEFT IN THE QUEUE.");
+	//#endif
 
 	if (ap_mode == true)
 	{
@@ -807,19 +818,4 @@ void Station::overall_summary(Logger* logger, float endtime)
 		for (auto& station : inactive)
 			logger->writeline("WARNING: All events droppped for this destination id " + num2str(station));
 	}
-}
-
-void Station::queue_status(Logger* logger)
-{
-	logger->writeline("Average latency (ms)            :\t" + double2str(combined_qlat.empty() ? 0 : ave_lat / combined_qlat.size(), 2));
-	logger->writeline("Maximum latency (ms)            :\t" + double2str(max_lat, 2));
-	logger->writeline("Average queue size              :\t" + double2str(combined_qsize.empty() ? 0 : ave_size / combined_qsize.size(), 2));
-	logger->writeline("Maximum queue size              :\t" + num2str((int)max_size));
-	logger->writeline("\n\n");
-
-//#ifndef SHOWGUI
-//	if (Global::DEBUG_END > 50000
-//		&& total_events_ququed != (total_events_procc + total_events_dropped))
-//		error_out("NOT DONE YET. PACKETS LEFT IN THE QUEUE.");
-//#endif
 }
