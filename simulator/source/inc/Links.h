@@ -21,16 +21,12 @@ class Link
 private:
 	std::multimap<uint, uint> hashlink;
 public:
-	void add(uint source, uint destin)
+	inline void create(uint source, uint destin)
 	{
-		hashlink.insert(std::pair<uint, uint>(source, destin));
+		hashlink.emplace(source, destin);
+		hashlink.emplace(destin, source);
 	}
-	void add2way(uint source, uint destin)
-	{
-		add(source, destin);
-		add(destin, source);
-	}
-	std::vector<uint> dest(uint source)
+	inline std::vector<uint> dest(uint source)
 	{
 		return mltimap2vector(hashlink, source);
 	}

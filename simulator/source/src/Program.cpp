@@ -16,6 +16,7 @@ uint end_time;
 Logs logs;
 string path;
 
+
 void log_throughput(uint now, float &total, vector<sptrStation> &stations, map<uint, float> &thru)
 {
 	float data_per_sec = total;
@@ -46,6 +47,7 @@ Program::Program(unordered_map<string, string>& arglist) : total_data(0)
 		in_pathloss_map       = arglist.at("pathloss_map");
 	if (arglist.find("simulation_params") != arglist.end())
 		in_simulation_params  = arglist.at("simulation_params");
+
 
 	setup();
 	debugout("Progress [ ");
@@ -162,10 +164,10 @@ void Program::setup()
 	Global::dot11ShortRetryLimit = validre != re ? validre : re;
 #endif
 
-	dout("\n\n>>>>>>>>>>>>>>>>>>>>>>>   RETRY LIMIT: " + num2str(Global::dot11ShortRetryLimit) + "   <<<<<<<<<<<<<<<<<<");
-	dout(">>>>>>>>>>>>>>>>>>>>>>>   CWMAX: " + num2str(Global::aCWmax) + "      <<<<<<<<<<<<<<<<<<");
-	dout(">>>>>>>>>>>>>>>>>>>>>>>   CWMIN: " + num2str(Global::aCWmin) + "        <<<<<<<<<<<<<<<<<<\n\n");
-	// end of setting inputs
+	dout("\n\n");
+	dout(">>>>>>>>>>>>>>>>>>>>>>>>>>>   RETRY LIMIT    : " + num2str(Global::dot11ShortRetryLimit) + "      <<<<<<<<<<<<<<<<<<");
+	dout(">>>>>>>>>>>>>>>>>>>>>>>>>>>   CWMAX SETTING  : " + num2str(Global::aCWmax) + "      <<<<<<<<<<<<<<<<<<");
+	dout(">>>>>>>>>>>>>>>>>>>>>>>>>>>   CWMIN SETTING  : " + num2str(Global::aCWmin) + "      <<<<<<<<<<<<<<<<<<\n\n");
 
 	/* read the look up tables */
 	IO::read_packet_error_rate_lut();
@@ -245,14 +247,14 @@ void Program::setup()
 	{
 		if (sid == Global::sta_name_map[Global::ap_station])
 			continue;
-		Global::connections.add2way(sid, Global::sta_name_map[Global::ap_station]);
+		Global::connections.create(sid, Global::sta_name_map[Global::ap_station]);
 #endif
 	}
 
 	create_dir(output_dir);
 
 	path = output_dir + create_tstamp() + (WirelessChannel::isLongDistance() ? ("-L-" + num2str(Global::aCWmax)
-		+ "-" + num2str(Global::aCWmin) ) : "" ) + "/";
+		+ "-" + num2str(Global::aCWmin)) : "") + "/";
 
 	create_dir(path);
 
