@@ -41,7 +41,11 @@ private:
 
 	gcellvector *guiptr;
 	umap<station_number, prop_del_us> rrt_map;
+
+	/* station_number: <event-time, dequeue-time> */
 	umap<station_number, std::map<uint, uint>> devent;
+
+	/* station_number: <event-time, queue-size> */
 	umap<station_number, std::map<uint, uint>> queue_size;
 	umap<station_number, uint> dropped_count;
 	typedef std::pair<retry_count, std::shared_ptr<Frame>> qpair;
@@ -232,6 +236,5 @@ public:
 	float total_data_transferred();
 	void buffer_ap_stats(string input);
 	void unbuffer_ap_stats(Logger* logger);
-	void queue_status(Logger* logger);
 	bool active();
 };
