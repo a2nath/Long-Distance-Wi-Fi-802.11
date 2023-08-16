@@ -13,11 +13,11 @@ TrafficGenerator::TrafficGenerator(const uint phyid, const uivector& dests, cons
 	float slots_per_s = 1e6 / (double)dot11a_slot_time;
 
 	auto logger = logs.stations[phyid];
-	auto traffic_loads = mltimap2vector(Global::traffic_load, phyid);
+	auto requested_load = Global::connections.getload(phyid);
 
-	for (int i = 0; i < traffic_loads.size(); ++i)
+	for (int i = 0; i < requested_load.size(); ++i)
 	{
-		medium_load[dests[i]] = mcs_mapping.at(dests[i]).dead == false ? traffic_loads[i] : 0;
+		medium_load[dests[i]] = mcs_mapping.at(dests[i]).dead == false ? requested_load[i] : 0;
 	}
 
 	slot_count = floor(Global::simduration / (double)dot11a_slot_time);

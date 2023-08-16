@@ -60,7 +60,6 @@ uint Global::channel_number;
 uint Global::traffic_type;
 std::vector<unsigned long int> Global::seeds;
 std::vector<float> Global::txpowers;
-std::multimap<station_number, float> Global::traffic_load;
 float Global::bandwidth;
 float Global::frequency;
 uint Global::produration;

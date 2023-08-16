@@ -104,8 +104,6 @@ void Program::setup()
 	vector<vector<double>> sta_distances;
 	vector<vector<double>> sta_pathlosses;
 
-	chdir("../");
-
 	IO::readfile(input_dir + in_mapping_file, output);
 
 	sta_names.resize(output.size(), vector<string>(output.size()));
@@ -181,22 +179,19 @@ void Program::setup()
 	for (auto& s : output[seed]) Global::seeds.push_back(str2long(s));
 #endif
 
-	for (int i = 0; i < output[payload_rate].size(); ++i)
+	for (int station_number = 0; station_number < output[payload_rate].size(); ++station_number)
 	{
-		auto s = output[payload_rate][i];
-		if (i >= Global::station_count)
-			Global::traffic_load.insert(std::pair<uint, float>(Global::station_count-1, str2double(s)));
+		auto s = output[payload_rate][station_number];
+		if (station_number >= Global::station_count)
+			Global::connections.setload(Global::station_count - 1, station_number, str2double(s));
 		else
-			Global::traffic_load.insert(std::pair<uint, float>(i, str2double(s)));
+			Global::connections.setload(station_number, Global::station_count - 1, str2double(s));
 	}
 	simultaneous_tx = Global::station_count * Global::chwindow;
 	inters.reserve(Global::station_count - 1);
 
 	/* build the map of station and IDs*/
 	auto station_count = selected_stations.size();
-	if (Global::traffic_load.size() < station_count || Global::txpowers.size() != station_count)
-		error_out("traffic load: Input file wrong");
-
 	for (uint sta = 0; sta < station_count; ++sta)
 	{
 		Global::sta_name_map[selected_stations[sta]] = sta;
@@ -295,7 +290,7 @@ void Program::setup()
 	vector<float> loads;
 	for (auto sta : station_list)
 	{
-		auto a = mltimap2vector(Global::traffic_load, sta->getID());
+		auto a = Global::connections.getload(sta->getID());
 		loads.insert(loads.end(), a.begin(), a.end());
 	}
 
