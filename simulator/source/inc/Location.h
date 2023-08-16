@@ -4,7 +4,7 @@
 class Location
 {
 private:
-	float x, y, z;
+	double x, y, z;
 
 public:
 	Location() : x(NAN), y(NAN), z(NAN) {}

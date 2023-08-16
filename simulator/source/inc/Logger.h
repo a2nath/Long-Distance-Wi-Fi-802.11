@@ -57,7 +57,7 @@ public:
 		path = station_dir + name + " [" + station_name + "]";
 		main_file = path + "_verbose.txt";
 
-		writers.emplace_back(ofstream(main_file));
+		writers.emplace_back(main_file);
 		writer_idx = 0; // main writer
 
 	}

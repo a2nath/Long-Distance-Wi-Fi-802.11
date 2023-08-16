@@ -61,7 +61,7 @@ public:
 	}
 	double getGain(double angle)
 	{
-		ptrdiff_t pos = find(directions.begin(), directions.end(), angle) - directions.begin();
+		size_t pos = find(directions.begin(), directions.end(), angle) - directions.begin();
 		return pos < directions.size() ? gains[pos] : -1.0;
 	}
 	double getPowerPlusGain(double angle)

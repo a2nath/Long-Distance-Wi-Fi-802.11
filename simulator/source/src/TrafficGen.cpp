@@ -7,15 +7,13 @@ TrafficGenerator::TrafficGenerator(const uint phyid, const uivector& dests, cons
 	eventdata(payloads),
 	generator(gen)
 {
-	generator = std::mt19937_64(seed);// generator_object;
+	generator = std::mt19937_64(seed);                  // generator_object;
 
-	auto logger = logs.stations[phyid];
+	bool is_ap = dests.size() > 1 ? true : false;       // AP specific
 	float slots_per_s = 1e6 / (double)dot11a_slot_time;
 
-	bool is_ap = dests.size() > 1 ? true : false; // AP specific
-
+	auto logger = logs.stations[phyid];
 	auto traffic_loads = mltimap2vector(Global::traffic_load, phyid);
-	uint count = 0;
 
 	for (int i = 0; i < traffic_loads.size(); ++i)
 	{

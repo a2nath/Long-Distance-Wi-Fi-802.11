@@ -1,7 +1,6 @@
 #include <iostream>
 #include "../inc/Station.h"
 
-uint Station::id = 0;
 vector<string> ap_prints;
 
 

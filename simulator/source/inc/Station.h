@@ -16,7 +16,6 @@ class Station
 private:
 	string self_name;
 	uint uniqueID;
-	static uint id;
 	Location currentlocation;
 	MacLayer * maclayer;
 	PhyAdapter * phyadapter;
