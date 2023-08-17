@@ -131,23 +131,13 @@ void Program::setup()
 	/* Read the input parameters from the INPUT file */
 	IO::json_parser(input_dir + in_simulation_params);
 
-	debug_endtime = Global::DEBUG_END;
-
-	vector<string> selected_stations(Global::sta_name_map.size());
-	for (auto& sta : Global::sta_name_map)
-		selected_stations[sta.second] = sta.first;
-
-	dout("\n\n");
-	dout(">>>>>>>>>>>>>>>>>>>>>>>>>>>   RETRY LIMIT    : " + num2str(Global::dot11ShortRetryLimit) + "      <<<<<<<<<<<<<<<<<<");
-	dout(">>>>>>>>>>>>>>>>>>>>>>>>>>>   CWMAX SETTING  : " + num2str(Global::aCWmax) + "      <<<<<<<<<<<<<<<<<<");
-	dout(">>>>>>>>>>>>>>>>>>>>>>>>>>>   CWMIN SETTING  : " + num2str(Global::aCWmin) + "      <<<<<<<<<<<<<<<<<<\n\n");
-
 	/* read the look up tables */
 	IO::read_packet_error_rate_lut();
 	IO::read_symbol_error_rate_lut();
 
-	simultaneous_tx = Global::station_count * Global::chwindow;
-	inters.reserve(Global::station_count - 1);
+	vector<string> selected_stations(Global::sta_name_map.size());
+	for (auto& sta : Global::sta_name_map)
+		selected_stations[sta.second] = sta.first;
 
 	/* Shortlist stations based on the selected stations in the input file */
 	vector<pair<int, int>> indices, indices2;
@@ -181,7 +171,6 @@ void Program::setup()
 		distance_table[norm_idx.first][norm_idx.second] = sta_distances[abs_idx.first][abs_idx.second];
 		pathloss_table[norm_idx.first][norm_idx.second] = sta_pathlosses[abs_idx.first][abs_idx.second];
 	}
-
 
 	/* start logging from here onwards */
 	create_dir(output_dir);
@@ -230,6 +219,14 @@ void Program::setup()
 	/* copy the input file into the output summary at the top for reference to input parameters */
 	IO::copy_input_to_log(logs.common, input_dir + in_simulation_params, path);
 
+	simultaneous_tx = Global::station_count * Global::chwindow;
+	inters.reserve(Global::station_count - 1);
+	debug_endtime = Global::DEBUG_END;
+
+	dout("\n\n");
+	dout(">>>>>>>>>>>>>>>>>>>>>>>>>>>   RETRY LIMIT    : " + num2str(Global::dot11ShortRetryLimit) + "      <<<<<<<<<<<<<<<<<<");
+	dout(">>>>>>>>>>>>>>>>>>>>>>>>>>>   CWMAX SETTING  : " + num2str(Global::aCWmax) + "      <<<<<<<<<<<<<<<<<<");
+	dout(">>>>>>>>>>>>>>>>>>>>>>>>>>>   CWMIN SETTING  : " + num2str(Global::aCWmin) + "      <<<<<<<<<<<<<<<<<<\n\n");
 }
 
 void Program::phy_cca_indication(uint now, uint destination_id)
