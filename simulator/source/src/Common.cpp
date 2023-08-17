@@ -444,7 +444,7 @@ namespace IO
 				uint dest = stoi(connection.substr(connection.find(":") + 1));
 				Global::connections.create(source, dest);
 
-				auto& loads = inputs["trafficload-megabits"];
+				auto& loads      = inputs["trafficload-megabits"];
 				auto upstream_id = (loads.size() / 2) + downstream_id;
 
 				Global::connections.setload(source, dest, stod(loads[downstream_id]));
@@ -505,15 +505,15 @@ namespace IO
 		}
 	}
 
-	void copy_input_to_log(Logger* log, string& output_path)
+	void copy_input_to_log(Logger*& log, const string& inputfile, string& output_path)
 	{
 		vector<string> file_contents;
-		getstream(log->getname(), file_contents);
+		getstream(inputfile, file_contents);
 
 		string token_conns = "connections\": \"";
 		string token_seeds = "seeds\": \"";
 		string token_retry = "relimit\": \"";
-		string token_load = "trafficload_medebits\": \"";
+		string token_load = "trafficload-megabits\": \"";
 		string load_data_from_input = "";
 
 		/* 3 conditions where the inputs will be re-interpreted by the program */
@@ -525,9 +525,9 @@ namespace IO
 			if (idx != string::npos)
 			{
 				auto idx2 = line.rfind("\"");
-				idx += token_seeds.size();
+				idx += token_conns.size();
 				string connections = Global::connections.to_string();
-				line.replace(idx, idx2 - idx + 1, connections);
+				line.replace(idx, idx2 - idx, connections);
 			}
 
 			idx = line.find(token_seeds);
@@ -538,10 +538,10 @@ namespace IO
 				string seeds = "";
 				for (auto& seed : Global::seeds)
 				{
-					seeds += seed + ",";
+					seeds += num2str(seed) + ",";
 				}
 				seeds.pop_back();
-				line.replace(idx, idx2 - idx + 1, seeds);
+				line.replace(idx, idx2 - idx, seeds);
 			}
 
 			idx = line.find(token_retry);
@@ -550,7 +550,7 @@ namespace IO
 				auto idx2 = line.rfind("\"");
 				idx += token_retry.size();
 				auto retry_str = num2str(Global::dot11ShortRetryLimit);
-				line.replace(idx, idx2 - idx + 1, retry_str);
+				line.replace(idx, idx2 - idx, retry_str);
 			}
 
 			if (load_data_from_input.empty())
@@ -558,19 +558,21 @@ namespace IO
 				idx = line.find(token_load);
 				if (idx != string::npos)
 				{
-					load_data_from_input = line.substr(idx, line.rfind("\""));
+					auto ite = line.find_first_of("0123456789", idx + token_load.size());
+					auto ite2 = line.find("\"", ite);
+					load_data_from_input  = line.substr(ite, ite2 - ite);
 				}
 			}
 
 			output_buff.emplace_back(line);
 		}
 
-		auto filename = "Summary_[" + load_data_from_input + "]";
+		string filename = "Summary_\[" + load_data_from_input + "\]";
 		log = new Logger(output_path, filename);
 
 		log->writeline("=================================== INPUT FILE =====================================");
 		for (auto& line : output_buff)
-			log->writeline(line);
+			log->write(line);
 		log->writeline("====================================================================================");
 	}
 }

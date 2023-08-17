@@ -133,9 +133,9 @@ void Program::setup()
 
 	debug_endtime = Global::DEBUG_END;
 
-	vector<string> selected_stations;
+	vector<string> selected_stations(Global::sta_name_map.size());
 	for (auto& sta : Global::sta_name_map)
-		selected_stations.emplace_back(sta.first);
+		selected_stations[sta.second] = sta.first;
 
 	dout("\n\n");
 	dout(">>>>>>>>>>>>>>>>>>>>>>>>>>>   RETRY LIMIT    : " + num2str(Global::dot11ShortRetryLimit) + "      <<<<<<<<<<<<<<<<<<");
@@ -194,13 +194,13 @@ void Program::setup()
 #ifdef SHOWGUI
 	/* initialize the gui_map */
 	guimap.resize(Global::station_count, gcellvector(Global::produration));
-	for (auto& data : Global::sta_name_map)
+	for (auto& data : selected_stations)
 	{
-		station_list.emplace_back(new Station(data.first, station_names, distance_table, pathloss_table, &guimap[sta]));
+		station_list.emplace_back(new Station(data, station_names, distance_table, pathloss_table, &guimap[Global::sta_name_map[data]]));
 #else
-	for (auto& data : Global::sta_name_map)
+	for (auto& data : selected_stations)
 	{
-		station_list.emplace_back(new Station(data.first, station_names, distance_table, pathloss_table, nullptr));
+		station_list.emplace_back(new Station(data, station_names, distance_table, pathloss_table, nullptr));
 #endif
 	}
 
@@ -227,7 +227,8 @@ void Program::setup()
 	for (auto &source : station_list)
 		proptable[source->getID()] = source->getAllPropagationDelays();
 
-	IO::copy_input_to_log(logs.common, path);
+	/* copy the input file into the output summary at the top for reference to input parameters */
+	IO::copy_input_to_log(logs.common, input_dir + in_simulation_params, path);
 
 }
 
@@ -244,7 +245,7 @@ void Program::phy_cca_indication(uint now, uint destination_id)
 			uint a = pair.reltime + proptable.at(source_station).at(destination_id) + pair.dur;
 			uint b = pair.reltime + proptable.at(source_station).at(destination_id);
 
-			if (now < a	&& now >= b)
+			if (b <= now && now < a)
 			{
 				inters.push_back(source_station);
 			}

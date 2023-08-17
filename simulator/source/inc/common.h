@@ -85,7 +85,7 @@ namespace IO
 	void read_symbol_error_rate_lut();
 	void json_parser(string input_file);
 	void readfile(string filename, vector<vector<string>>& out);
-	void copy_input_to_log(Logger* logger, string& output_path);
+	void copy_input_to_log(Logger*& logger, const string& inputfile, string& output_path);
 }
 
 typedef unsigned int uint;

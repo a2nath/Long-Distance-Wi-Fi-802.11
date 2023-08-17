@@ -58,7 +58,7 @@ public:
 		std::string out = "";
 		for (auto& link : hashlink)
 		{
-			out += link.first + ":" + link.second + ',';
+			out += std::to_string(link.first) + ":" + std::to_string(link.second) + ',';
 		}
 		out.pop_back();
 		return out;
