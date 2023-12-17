@@ -40,7 +40,7 @@ The following images depict non-line-of-sight issues between stations as returne
 
 There are two modes of simulations, one of them is the log-only simulations that ignores GUI libraries or the QT package, and thus the timeline visualization. It is possible that the compiler will complain about QT dependencies, and if it does, disable the flag `#define SHOWGUI` in the file, `common.h`. 
 
-The other mode of operation with the flag enabled requires you do download 8-9 GB of QT packages before you can get going. You don't need to change anything in the source code as long as you setup the QT package correctly for Visual Studio.Follow this tutorial to setup QT: `youtu.be/P6Mg8FpFPS8`
+The other mode of operation with the flag enabled requires you do download 8-9 GB of QT packages before you can get going. You don't need to change anything in the source code as long as you setup the QT package correctly for Visual Studio. Follow this tutorial to setup QT: `youtu.be/P6Mg8FpFPS8`
 
 ## Results
 
